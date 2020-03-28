@@ -10,19 +10,26 @@
 AmbuComm::AmbuComm(int baudios)
 {
     Serial.begin(baudios);
+    while (!Serial)
+    {
+        ;
+    }
 }
 
 void AmbuComm::send(float pressure, float volume, float time, float ie, float frequency)
 {
-    Serial.print(pressure);
-    Serial.print(",");
-    Serial.print(volume);
-    Serial.print(",");
-    Serial.print(time);
-    Serial.print(",");
-    Serial.print(ie);
-    Serial.print(",");
-    Serial.print(frequency);
-    Serial.println();
-    Serial.flush();
+    if (Serial.available())
+    {
+        Serial.print(pressure);
+        Serial.print(",");
+        Serial.print(volume);
+        Serial.print(",");
+        Serial.print(time);
+        Serial.print(",");
+        Serial.print(ie);
+        Serial.print(",");
+        Serial.print(frequency);
+        Serial.println();
+        Serial.flush();
+    }
 }
