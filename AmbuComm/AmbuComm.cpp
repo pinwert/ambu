@@ -25,6 +25,7 @@ void AmbuComm::send(float pressure, float volume, float time, float ie, float fr
         Serial.print(ie);
         Serial.write(",");
         Serial.print(frequency);
+        Serial.write(",");
         Serial.println();
         Serial.flush();
     }

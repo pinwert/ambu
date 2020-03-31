@@ -1,2 +1,2 @@
 .DS_Store
-./Client/node_modules
+/Client/node_modules
