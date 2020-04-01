@@ -51,7 +51,7 @@ const configVolume = {
       }
     ]
   },
-  options: chartOptions
+  options: { ...chartOptions }
 };
 configVolume.options.title.text = "Volume";
 const configPressure = {
@@ -67,7 +67,7 @@ const configPressure = {
       }
     ]
   },
-  options: chartOptions
+  options: { ...chartOptions }
 };
 configPressure.options.title.text = "Pressure";
 
