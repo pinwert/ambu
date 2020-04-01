@@ -22,42 +22,7 @@ const optsVolume = {
     {
       label: "volume",
       stroke: "red",
-      fill: "rgba(255,0,0,0.1)",
-      paths: (u, sidx, i0, i1) => {
-        const s = u.series[sidx];
-        const xdata = u.data[0];
-        const ydata = u.data[sidx];
-        const scaleX = "x";
-        const scaleY = s.scale;
-
-        const stroke = new Path2D();
-
-        for (let i = i0; i <= i1; i++) {
-          let x0 = u.valToPos(xdata[i], scaleX, true);
-          let y0 = u.valToPos(ydata[i], scaleY, true);
-          let x1 = u.valToPos(xdata[i + 1], scaleX, true);
-          let y1 = u.valToPos(ydata[i + 1], scaleY, true);
-
-          let midX = (x0 + x1) / 2;
-          let midY = (y0 + y1) / 2;
-
-          stroke.quadraticCurveTo(x0, y0, midX, midY);
-        }
-
-        const fill = new Path2D(stroke);
-
-        let minY = u.valToPos(u.scales[scaleY].min, scaleY, true);
-        let minX = u.valToPos(u.scales[scaleX].min, scaleX, true);
-        let maxX = u.valToPos(u.scales[scaleX].max, scaleX, true);
-
-        fill.lineTo(maxX, minY);
-        fill.lineTo(minX, minY);
-
-        return {
-          stroke,
-          fill
-        };
-      }
+      fill: "rgba(255,0,0,0.1)"
     }
   ]
 };
@@ -76,42 +41,7 @@ const optsPressure = {
     {
       label: "pressure",
       stroke: "blue",
-      fill: "rgba(0,0,255,0.1)",
-      paths: (u, sidx, i0, i1) => {
-        const s = u.series[sidx];
-        const xdata = u.data[0];
-        const ydata = u.data[sidx];
-        const scaleX = "x";
-        const scaleY = s.scale;
-
-        const stroke = new Path2D();
-
-        for (let i = i0; i <= i1; i++) {
-          let x0 = u.valToPos(xdata[i], scaleX, true);
-          let y0 = u.valToPos(ydata[i], scaleY, true);
-          let x1 = u.valToPos(xdata[i + 1], scaleX, true);
-          let y1 = u.valToPos(ydata[i + 1], scaleY, true);
-
-          let midX = (x0 + x1) / 2;
-          let midY = (y0 + y1) / 2;
-
-          stroke.quadraticCurveTo(x0, y0, midX, midY);
-        }
-
-        const fill = new Path2D(stroke);
-
-        let minY = u.valToPos(u.scales[scaleY].min, scaleY, true);
-        let minX = u.valToPos(u.scales[scaleX].min, scaleX, true);
-        let maxX = u.valToPos(u.scales[scaleX].max, scaleX, true);
-
-        fill.lineTo(maxX, minY);
-        fill.lineTo(minX, minY);
-
-        return {
-          stroke,
-          fill
-        };
-      }
+      fill: "rgba(0,0,255,0.1)"
     }
   ]
 };
@@ -148,10 +78,10 @@ window.onload = function() {
       const pointCicle = (1000 / sampling) * (1 / msg.frequency);
       volumeCicle.innerHTML = (
         [
-          ...dataVolume.slice(i > pointCicle ? i - pointCicle : 0, i + 1),
+          ...newDataVolume[1].slice(i > pointCicle ? i - pointCicle : 0, i + 1),
           ...(i < pointCicle
-            ? dataVolume.slice(
-                dataVolume.length - pointCicle + i - 1,
+            ? newDataVolume[1].slice(
+                newDataVolume[1].length - pointCicle + i - 1,
                 numberOfPoints
               )
             : [])
