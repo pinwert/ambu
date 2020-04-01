@@ -42,9 +42,6 @@ io.on("connection", function(socket) {
   }
 });
 
-io.on("disconnect", function(socket) {
-  writer.end();
-});
 http.listen(port, function() {
   console.log("listening on *:" + port);
 });

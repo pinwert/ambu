@@ -9,8 +9,8 @@ for (var j = 0; j <= numberOfPoints; j++) {
 }
 
 const optsVolume = {
-  width: window.innerWidth * 0.8,
-  height: window.innerHeight * 0.4,
+  width: window.innerWidth * 0.8 - 40,
+  height: window.innerHeight * 0.4 - 40,
   title: "Volume",
   scales: {
     x: {
@@ -28,8 +28,8 @@ const optsVolume = {
 };
 
 const optsPressure = {
-  width: window.innerWidth * 0.8,
-  height: window.innerHeight * 0.4,
+  width: window.innerWidth * 0.8 - 40,
+  height: window.innerHeight * 0.4 - 40,
   title: "Pressure",
   scales: {
     x: {
