@@ -7,7 +7,7 @@ sudo apt install nodejs
 
 npm install
 
-SERIAL_PORT=/dev/tty.usbmodem146201 node index.js
+SERIAL_PORT=/dev/tty.usbmodem146201 CSV_PATH=./ node index.js
 
 ```
 
