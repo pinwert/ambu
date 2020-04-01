@@ -36,7 +36,7 @@ function sendMessage(io) {
 let ioSet;
 io.on("connection", function(socket) {
   if (!ioSet) {
-    writer.pipe(fs.createWriteStream(process.env.CSV_PATH || "" + "out.csv"));
+    writer.pipe(fs.createWriteStream("out.csv"));
     sendMessage(io);
     ioSet = true;
   }
