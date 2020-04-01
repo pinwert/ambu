@@ -16,9 +16,6 @@ for (var j = 0; j <= numberOfPoints; j++) {
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
-  title: {
-    display: true
-  },
   animation: {
     duration: 0
   },
@@ -51,9 +48,14 @@ const configVolume = {
       }
     ]
   },
-  options: { ...chartOptions }
+  options: {
+    ...chartOptions,
+    title: {
+      display: true,
+      text: "Volume"
+    }
+  }
 };
-configVolume.options.title.text = "Volume";
 const configPressure = {
   type: "line",
   data: {
@@ -67,9 +69,14 @@ const configPressure = {
       }
     ]
   },
-  options: { ...chartOptions }
+  options: {
+    ...chartOptions,
+    title: {
+      display: true,
+      text: "Pressure"
+    }
+  }
 };
-configPressure.options.title.text = "Pressure";
 
 window.onload = function() {
   const ctx1 = document.getElementById("canvas1").getContext("2d");
