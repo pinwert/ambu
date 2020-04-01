@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Charts</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: row;
+      }
+      canvas {
+        width: 70vw !important;
+        height: 40vh !important;
+      }
+      .charts {
+        display: flex;
+        flex-direction: column;
+      }
+      .chart {
+        position: relative;
+        width: 70vw;
+        padding: 5vh 5vw;
+        height: 40vh;
+      }
+      .info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .label {
+        padding: 10px 0 5px;
+        color: gray;
+      }
+      .imput {
+        padding: 5px 0 10px;
+        color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="charts">
+      <div class="chart">
+        <canvas id="canvas1"></canvas>
+      </div>
+      <div class="chart">
+        <canvas id="canvas2"></canvas>
+      </div>
+    </div>
+    <div class="info">
+      <span class="label">time</span>
+      <span class="input" id="time"></span>
+      <span class="label">volume</span>
+      <span class="input" id="volume"></span>
+    </div>
+    <script src="/socket.io-1.2.0.js"></script>
+    <script src="/Chart.min.js"></script>
+    <script src="/main.js"></script>
+  </body>
+</html>
