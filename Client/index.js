@@ -27,8 +27,8 @@ app.get("/", function(req, res) {
 function sendMessage(io) {
   parser.on("data", line => {
     const data = line.split(",");
-    const [volume, pressure, time, ie, frequency] = data;
-    io.clients().emit("data", { volume, pressure, time, ie, frequency });
+    const [pressure, volume, time, ie, frequency] = data;
+    io.clients().emit("data", { pressure, volume, time, ie, frequency });
     writer.write(data);
   });
 }

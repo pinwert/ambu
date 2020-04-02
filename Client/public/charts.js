@@ -10,8 +10,7 @@ for (var j = 0; j <= numberOfPoints; j++) {
 
 const optsVolume = {
   width: window.innerWidth * 0.8 - 40,
-  height: window.innerHeight * 0.4 - 40,
-  title: "Volume",
+  height: window.innerHeight * 0.5 - 60,
   scales: {
     x: {
       time: false
@@ -24,13 +23,26 @@ const optsVolume = {
       stroke: "red",
       fill: "rgba(255,0,0,0.1)"
     }
+  ],
+  axes: [
+    {},
+    {
+      space: 10,
+      show: true,
+      label: "Volume",
+      labelSize: 30,
+      labelFont: "bold 12px Arial",
+      font: "8px Arial",
+      gap: 5,
+      size: 50,
+      stroke: "red"
+    }
   ]
 };
 
 const optsPressure = {
   width: window.innerWidth * 0.8 - 40,
-  height: window.innerHeight * 0.4 - 40,
-  title: "Pressure",
+  height: window.innerHeight * 0.5 - 60,
   scales: {
     x: {
       time: false
@@ -39,9 +51,25 @@ const optsPressure = {
   series: [
     {},
     {
+      scale: 0.01,
+      side: 0.01,
       label: "pressure",
       stroke: "blue",
       fill: "rgba(0,0,255,0.1)"
+    }
+  ],
+  axes: [
+    {},
+    {
+      space: 10,
+      show: true,
+      label: "Pressure",
+      labelSize: 30,
+      labelFont: "bold 12px Arial",
+      font: "8px Arial",
+      gap: 5,
+      size: 50,
+      stroke: "blue"
     }
   ]
 };
