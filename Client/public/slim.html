@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Charts</title>
+    <title>RADU</title>
     <link rel="stylesheet" href="/uplot.css" />
     <style>
       body {
@@ -34,26 +34,54 @@
         border-radius: 10px;
         margin: 10px;
         background-color: whitesmoke;
-        width: calc(20vw - 40px);
-      }
-
-      .title {
-        padding: 10px 0 5px;
-        color: dimgray;
-        font-weight: bold;
-      }
-
-      .label {
-        padding: 10px 0 5px;
-        color: gray;
-      }
-
-      .imput {
-        padding: 5px 0 10px;
-        color: black;
+        width: calc(20vw - 60px);
       }
       .legend {
         display: none !important;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        margin: 5px;
+        max-width: 100%;
+        align-items: center;
+      }
+      label {
+        font-size: inherit;
+        max-width: 50%;
+        color: gray;
+      }
+      input {
+        font-size: inherit;
+        max-width: 40%;
+      }
+      input.double {
+        font-size: inherit;
+        max-width: 25%;
+      }
+      #numericInput {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        flex: 1;
+        width: 100%;
+      }
+      #numBox {
+        height: 30px;
+        width: 100%;
+        background: white;
+        border-radius: 3px;
+        border: 1px solid gray;
+      }
+      td {
+        width: 33%;
+        background-color: gray;
+        cursor: pointer;
+        text-align: center;
+      }
+      table {
+        width: 100%;
+        margin-top: 2px;
       }
     </style>
   </head>
@@ -68,11 +96,62 @@
       </div>
     </div>
     <div class="info">
-      <span class="title">RADU</span>
-      <span class="label">time</span>
-      <span class="input" id="time"></span>
-      <span class="label">volume</span>
-      <span class="input" id="volume"></span>
+      <div class="row">
+        <label>time</label>
+        <input id="time" disabled="true" />
+      </div>
+      <div class="row">
+        <label class="label">volume</label>
+        <input id="volume" disabled="true" />
+      </div>
+      <div class="row">
+        <label for="volume_min">I / E</label>
+        <input class="double" id="ie_ins" type="number" /> /
+        <input class="double" id="ie_es" type="number" />
+      </div>
+      <div class="row">
+        <label class="label">Embolado</label>
+        <input id="embolado" type="number" />
+      </div>
+      <div class="row">
+        <label class="label">Halt</label>
+        <input id="halt" type="number" />
+      </div>
+      <div class="row">
+        <label for="volume_min">Alarm V</label>
+        <input class="double" id="volune_min" type="number" />
+        <input class="double" id="volune_max" type="number" />
+      </div>
+      <div class="row">
+        <label for="pressure_min">Alarm P</label>
+        <input class="double" id="presure_min" type="number" />
+        <input class="double" id="presure_max" type="number" />
+      </div>
+      <div id="numericInput">
+        <div id="numBox"></div>
+        <table id="keypad">
+          <tr>
+            <td class="key">1</td>
+            <td class="key">2</td>
+            <td class="key">3</td>
+          </tr>
+          <tr>
+            <td class="key">4</td>
+            <td class="key">5</td>
+            <td class="key">6</td>
+          </tr>
+          <tr>
+            <td class="key">7</td>
+            <td class="key">8</td>
+            <td class="key">9</td>
+          </tr>
+          <tr>
+            <td class="btn">DEL</td>
+            <td class="key">0</td>
+            <td class="btn">CLR</td>
+          </tr>
+        </table>
+      </div>
     </div>
     <script src="/socket.io-1.2.0.js"></script>
     <!-- <script src="/Chart.min.js"></script>

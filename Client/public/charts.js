@@ -13,16 +13,16 @@ const optsVolume = {
   height: window.innerHeight * 0.5 - 60,
   scales: {
     x: {
-      time: false
-    }
+      time: false,
+    },
   },
   series: [
     {},
     {
       label: "volume",
       stroke: "red",
-      fill: "rgba(255,0,0,0.1)"
-    }
+      fill: "rgba(255,0,0,0.1)",
+    },
   ],
   axes: [
     {},
@@ -35,9 +35,9 @@ const optsVolume = {
       font: "8px Arial",
       gap: 5,
       size: 50,
-      stroke: "red"
-    }
-  ]
+      stroke: "red",
+    },
+  ],
 };
 
 const optsPressure = {
@@ -45,8 +45,8 @@ const optsPressure = {
   height: window.innerHeight * 0.5 - 60,
   scales: {
     x: {
-      time: false
-    }
+      time: false,
+    },
   },
   series: [
     {},
@@ -55,8 +55,8 @@ const optsPressure = {
       side: 0.01,
       label: "pressure",
       stroke: "blue",
-      fill: "rgba(0,0,255,0.1)"
-    }
+      fill: "rgba(0,0,255,0.1)",
+    },
   ],
   axes: [
     {},
@@ -69,16 +69,40 @@ const optsPressure = {
       font: "8px Arial",
       gap: 5,
       size: 50,
-      stroke: "blue"
-    }
-  ]
+      stroke: "blue",
+    },
+  ],
 };
 
-window.onload = function() {
-  const time = document.getElementById("time");
-  const volumeCicle = document.getElementById("volume");
+window.onload = function () {
+  // ***** info inputs ***** //
+
+  const inputsShow = {
+    time: document.getElementById("time"),
+    volumeCicle: document.getElementById("volume"),
+  };
+
+  const inputs = {
+    ieIns: document.getElementById("ie_ins"),
+    ieEs: document.getElementById("ie_es"),
+    embolado: document.getElementById("embolado"),
+    halt: document.getElementById("halt"),
+    voluneMin: document.getElementById("volune_min"),
+    voluneMax: document.getElementById("volune_max"),
+    presureMin: document.getElementById("presure_min"),
+    presureMax: document.getElementById("presure_max"),
+  };
+
+  Object.keys(inputs).forEach((key) => {
+    inputs[key].onchange = (e) =>
+      socket.emit("data", e.currentTarget.value + "\n");
+  });
+
+  // ***** ----------- ***** //
+
   const newDataVolume = [...dataVolume];
   const newDataPressure = [...dataPressure];
+
   const volume = new uPlot(
     optsVolume,
     dataVolume,
@@ -89,9 +113,11 @@ window.onload = function() {
     dataPressure,
     document.getElementById("pressureChart")
   );
+
   const socket = io();
   let i = 0;
-  socket.on("data", function(msg) {
+
+  socket.on("data", function (msg) {
     newDataVolume[1][i] = msg.volume;
     newDataVolume[1][i + 1] = null;
     newDataPressure[1][i] = msg.pressure;
@@ -104,7 +130,7 @@ window.onload = function() {
 
     if (i % 10 === 0) {
       const pointCicle = (1000 / sampling) * (1 / msg.frequency);
-      volumeCicle.innerHTML = (
+      inputsShow.volumeCicle.value = (
         [
           ...newDataVolume[1].slice(i > pointCicle ? i - pointCicle : 0, i + 1),
           ...(i < pointCicle
@@ -112,14 +138,14 @@ window.onload = function() {
                 newDataVolume[1].length - pointCicle + i - 1,
                 numberOfPoints
               )
-            : [])
+            : []),
         ].reduce((a, b) => (Number(b) ? a + Number(b) : a), 0) * pointCicle
       ).toFixed(2);
 
       const s = msg.time / 1000;
       const min = Math.floor((s / 60) << 0);
       const sec = Math.floor(s % 60);
-      time.innerHTML = min + ":" + sec;
+      inputsShow.time.value = min + ":" + sec;
     }
 
     if (i % 3 === 0) {
