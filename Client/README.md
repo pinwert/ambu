@@ -12,4 +12,4 @@ SERIAL_PORT=/dev/tty.usbmodem146201 PORT=3000 node index.js
 
 ```
 
-and the web is in http://localhost:3000 or a slim version in http://localhost:3000/slim.html
+and the web is in http://localhost:3000
