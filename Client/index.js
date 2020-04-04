@@ -26,9 +26,10 @@ app.get("/", function (req, res) {
 
 function sendMessage(io) {
   parser.on("data", (line) => {
-    const data = line.split(",");
-    if (data.length === 1) {
-      console.log("***", line, "***");
+    const data = line.slice(0, -1).split(",");
+    if (!Number(data[0]) && data[0] !== "0.00") {
+      const [key, value] = data;
+      io.clients().emit("value", { key, value });
     } else {
       const [pressure, volume, time, ie, frequency] = data;
       io.clients().emit("data", { pressure, volume, time, ie, frequency });
@@ -45,7 +46,6 @@ io.on("connection", function (socket) {
     ioSet = true;
   }
   socket.on("data", function (msg) {
-    console.log("Emit ---------", msg);
     portS.write(msg);
   });
 });
