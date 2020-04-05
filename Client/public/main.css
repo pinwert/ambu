@@ -50,6 +50,16 @@ label {
   color: gray;
 }
 
+label.pressure {
+  color: rgba(0, 0, 255, 0.6);
+}
+label.flow_ins {
+  color: rgba(255, 0, 0, 0.6);
+}
+label.flow_ex {
+  color: rgba(0, 255, 0, 0.6);
+}
+
 input {
   font-size: inherit;
   max-width: 40%;

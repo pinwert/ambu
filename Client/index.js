@@ -1,3 +1,4 @@
+const baudRate = 115200;
 const express = require("express");
 const SerialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
@@ -6,10 +7,10 @@ const csvWriter = require("csv-write-stream");
 const writer = csvWriter({
   separator: ",",
   newline: "\n",
-  headers: ["pressure", "volume", "time", "ie", "frequency"],
+  headers: ["pressure", "flow_ins", "flow_ex", "time", "ie", "frequency"],
   sendHeaders: true,
 });
-const portS = new SerialPort(process.env.SERIAL_PORT, { baudRate: 9600 });
+const portS = new SerialPort(process.env.SERIAL_PORT, { baudRate });
 
 const parser = new Readline();
 portS.pipe(parser);
@@ -31,8 +32,15 @@ function sendMessage(io) {
       const [key, value] = data;
       io.clients().emit("value", { key, value });
     } else {
-      const [pressure, volume, time, ie, frequency] = data;
-      io.clients().emit("data", { pressure, volume, time, ie, frequency });
+      const [pressure, flow_ins, flow_ex, time, ie, frequency] = data;
+      io.clients().emit("data", {
+        pressure,
+        flow_ins,
+        flow_ex,
+        time,
+        ie,
+        frequency,
+      });
       writer.write(data);
     }
   });

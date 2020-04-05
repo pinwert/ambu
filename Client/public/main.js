@@ -1,6 +1,6 @@
-const numberOfPoints = 200;
-const sampling = 30;
-const dataVolume = [[], []];
+const numberOfPoints = 400;
+const sampling = 10;
+const dataFlow = [[], [], []];
 const dataPressure = [[], []];
 const dataToSend = {
   field: "",
@@ -9,7 +9,7 @@ const dataToSend = {
 
 const dataAccepted = [
   "ie_ins",
-  "ie_es",
+  "ie_ex",
   "embolado",
   "halt",
   "volume_min",
@@ -19,11 +19,11 @@ const dataAccepted = [
 ];
 
 for (var j = 0; j <= numberOfPoints; j++) {
-  dataVolume[0][j] = j;
+  dataFlow[0][j] = j;
   dataPressure[0][j] = j;
 }
 
-const optsVolume = {
+const optsFlow = {
   width: window.innerWidth * 0.8 - 40,
   height: window.innerHeight * 0.5 - 60,
   scales: {
@@ -34,9 +34,14 @@ const optsVolume = {
   series: [
     {},
     {
-      label: "volume",
+      label: "Flow ins",
       stroke: "red",
       fill: "rgba(255,0,0,0.1)",
+    },
+    {
+      label: "Flow ex",
+      stroke: "green",
+      fill: "rgba(0,255,0,0.1)",
     },
   ],
   axes: [
@@ -44,13 +49,13 @@ const optsVolume = {
     {
       space: 10,
       show: true,
-      label: "Volume",
+      label: "Flow ins, Flow ex",
       labelSize: 30,
       labelFont: "bold 12px Arial",
       font: "8px Arial",
       gap: 5,
       size: 50,
-      stroke: "red",
+      stroke: "black",
     },
   ],
 };
@@ -84,7 +89,7 @@ const optsPressure = {
       font: "8px Arial",
       gap: 5,
       size: 50,
-      stroke: "blue",
+      stroke: "black",
     },
   ],
 };
@@ -93,13 +98,17 @@ window.onload = () => {
   // ***** info inputs ***** //
 
   const inputsShow = {
+    pressure: document.getElementById("pressure"),
+    flow_ins: document.getElementById("flow_ins"),
+    flow_ex: document.getElementById("flow_ex"),
     time: document.getElementById("time"),
-    volumeCicle: document.getElementById("volume"),
+    volume_cicle_ins: document.getElementById("volume_ins"),
+    volume_cicle_ex: document.getElementById("volume_ex"),
   };
 
   const inputs = {
     ie_ins: document.getElementById("ie_ins"),
-    ie_es: document.getElementById("ie_es"),
+    ie_ex: document.getElementById("ie_ex"),
     embolado: document.getElementById("embolado"),
     halt: document.getElementById("halt"),
     volume_min: document.getElementById("volume_min"),
@@ -126,13 +135,13 @@ window.onload = () => {
   const socket = io();
   // ***** Draw the charts ***** //
 
-  const newDataVolume = [...dataVolume];
+  const newDataFlow = [...dataFlow];
   const newDataPressure = [...dataPressure];
 
-  const volume = new uPlot(
-    optsVolume,
-    dataVolume,
-    document.getElementById("volumeChart")
+  const flow = new uPlot(
+    optsFlow,
+    dataFlow,
+    document.getElementById("flowChart")
   );
   const pressure = new uPlot(
     optsPressure,
@@ -142,8 +151,11 @@ window.onload = () => {
 
   let i = 0;
   socket.on("data", (msg) => {
-    newDataVolume[1][i] = msg.volume;
-    newDataVolume[1][i + 1] = null;
+    newDataFlow[1][i] = msg.flow_ins;
+    newDataFlow[2][i] = msg.flow_ex;
+    newDataFlow[1][i + 1] = null;
+    newDataFlow[2][i + 1] = null;
+
     newDataPressure[1][i] = msg.pressure;
     newDataPressure[1][i + 1] = null;
     i++;
@@ -154,12 +166,24 @@ window.onload = () => {
 
     if (i % 10 === 0) {
       const pointCicle = (1000 / sampling) * (1 / msg.frequency);
-      inputsShow.volumeCicle.value = (
+      inputsShow.volume_cicle_ins.value = (
         [
-          ...newDataVolume[1].slice(i > pointCicle ? i - pointCicle : 0, i + 1),
+          ...newDataFlow[1].slice(i > pointCicle ? i - pointCicle : 0, i + 1),
           ...(i < pointCicle
-            ? newDataVolume[1].slice(
-                newDataVolume[1].length - pointCicle + i - 1,
+            ? newDataFlow[1].slice(
+                newDataFlow[1].length - pointCicle + i - 1,
+                numberOfPoints
+              )
+            : []),
+        ].reduce((a, b) => (Number(b) ? a + Number(b) : a), 0) * pointCicle
+      ).toFixed(2);
+
+      inputsShow.volume_cicle_ex.value = (
+        [
+          ...newDataFlow[2].slice(i > pointCicle ? i - pointCicle : 0, i + 1),
+          ...(i < pointCicle
+            ? newDataFlow[2].slice(
+                newDataFlow[2].length - pointCicle + i - 1,
                 numberOfPoints
               )
             : []),
@@ -173,8 +197,11 @@ window.onload = () => {
     }
 
     if (i % 3 === 0) {
-      volume.setData(newDataVolume);
+      flow.setData(newDataFlow);
       pressure.setData(newDataPressure);
+      inputsShow.pressure.value = newDataPressure[1][i - 1];
+      inputsShow.flow_ins.value = newDataFlow[1][i - 1];
+      inputsShow.flow_ex.value = newDataFlow[2][i - 1];
     }
   });
 

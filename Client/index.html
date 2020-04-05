@@ -9,26 +9,38 @@
 
   <body>
     <div class="charts">
-      <div id="volumeChart" class="chart">
-        <!-- <canvas id="canvas1"></canvas> -->
-      </div>
-      <div id="pressureChart" class="chart">
-        <!-- <canvas id="canvas2"></canvas> -->
-      </div>
+      <div id="pressureChart" class="chart"></div>
+      <div id="flowChart" class="chart"></div>
     </div>
     <div class="info">
       <div class="row">
-        <label>time</label>
+        <label class="pressure">Pressure</label>
+        <input id="pressure" disabled="true" />
+      </div>
+      <div class="row">
+        <label class="flow_ins">Flow ins</label>
+        <input id="flow_ins" disabled="true" />
+      </div>
+      <div class="row">
+        <label class="flow_ex">Flow ex</label>
+        <input id="flow_ex" disabled="true" />
+      </div>
+      <div class="row">
+        <label>Time</label>
         <input id="time" disabled="true" />
       </div>
       <div class="row">
-        <label class="label">volume</label>
-        <input id="volume" disabled="true" type="number" step="0.01" />
+        <label class="label">Volume ins</label>
+        <input id="volume_ins" disabled="true" type="number" step="0.01" />
+      </div>
+      <div class="row">
+        <label class="label">Volume ex</label>
+        <input id="volume_ex" disabled="true" type="number" step="0.01" />
       </div>
       <div class="row">
         <label for="volume_min">I / E</label>
         <input class="double" id="ie_ins" type="number" step="0.01" /> /
-        <input class="double" id="ie_es" type="number" step="0.01" />
+        <input class="double" id="ie_ex" type="number" step="0.01" />
       </div>
       <div class="row">
         <label class="label">Embolado</label>

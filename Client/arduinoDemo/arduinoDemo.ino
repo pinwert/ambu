@@ -1,6 +1,6 @@
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 float i = 0;
@@ -11,7 +11,7 @@ int _delay = 10;
 void loop()
 {
   // **** Signal example emit ****
-  sendSignal(float(sin(i * 0.05) + 1), float(cos(i * 0.05) + 1), millis(), 0, 0.25);
+  sendSignal(float(sin(i * 0.05) + 1), float(sin(i * 0.05) + 1), float(cos(i * 0.05) + 1), millis(), 0, 0.25);
   i++;
   // **** * ****
 
@@ -36,11 +36,13 @@ void mirror(String data[2])
 /**
  * Send the sensors data throught the serial port
  */
-void sendSignal(float pressure, float volume, float time, float ie, float frequency)
+void sendSignal(float pressure, float flow_ins, float flow_ex, float time, float ie, float frequency)
 {
   Serial.print(pressure);
   Serial.print(",");
-  Serial.print(volume);
+  Serial.print(flow_ins);
+  Serial.print(",");
+  Serial.print(flow_ex);
   Serial.print(",");
   Serial.print(time);
   Serial.print(",");
@@ -76,7 +78,7 @@ void readData()
         //TODO action
         mirror(Ary);
       }
-      else if (Ary[0].equals("ie_es"))
+      else if (Ary[0].equals("ie_ex"))
       {
         //TODO action
         mirror(Ary);
