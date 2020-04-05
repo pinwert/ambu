@@ -2,6 +2,7 @@ const numberOfPoints = 400;
 const sampling = 10;
 const dataFlow = [[], [], []];
 const dataPressure = [[], []];
+const times = [];
 const dataToSend = {
   field: "",
   value: "",
@@ -22,6 +23,7 @@ const dataAccepted = [
 for (var j = 0; j <= numberOfPoints; j++) {
   dataFlow[0][j] = j;
   dataPressure[0][j] = j;
+  times[j] = 0;
 }
 
 const optsFlow = {
@@ -37,16 +39,18 @@ const optsFlow = {
     {
       label: "Flow ins",
       stroke: "red",
-      fill: "rgba(255,0,0,0.1)",
+      fill: "rgba(255,0,0,0.2)",
     },
     {
       label: "Flow ex",
       stroke: "green",
-      fill: "rgba(0,255,0,0.1)",
+      fill: "rgba(0,255,0,0.2)",
     },
   ],
   axes: [
-    {},
+    {
+      times,
+    },
     {
       space: 10,
       show: true,
@@ -70,17 +74,21 @@ const optsPressure = {
     },
   },
   series: [
-    {},
+    {
+      times,
+    },
     {
       scale: 0.01,
       side: 0.01,
       label: "pressure",
       stroke: "blue",
-      fill: "rgba(0,0,255,0.1)",
+      fill: "rgba(0,0,255,0.2)",
     },
   ],
   axes: [
-    {},
+    {
+      times,
+    },
     {
       space: 10,
       show: true,
@@ -122,16 +130,15 @@ window.onload = () => {
   // ***** ----------- ***** //
 
   // ***** default values ***** //
-  inputs.ie_ins.value=1;
-  inputs.ie_ex.value=2;
-  inputs.embolado.value=20;
-  inputs.volume_emb.value=0;
-  inputs.halt.value=0;
-  inputs.volume_min.value=0;
-  inputs.volume_max.value=0;
-  inputs.pressure_min.value=0;
-  inputs.pressure_max.value=0;
-
+  inputs.ie_ins.value = 1;
+  inputs.ie_ex.value = 2;
+  inputs.embolado.value = 20;
+  inputs.volume_emb.value = 0;
+  inputs.halt.value = 0;
+  inputs.volume_min.value = 0;
+  inputs.volume_max.value = 0;
+  inputs.pressure_min.value = 0;
+  inputs.pressure_max.value = 0;
 
   // ***** ----------- ***** //
 
@@ -171,6 +178,7 @@ window.onload = () => {
     newDataFlow[2][i] = msg.flow_ex;
     newDataFlow[1][i + 1] = null;
     newDataFlow[2][i + 1] = null;
+    times[i] = (msg.time / 1000).toFixed(1);
 
     newDataPressure[1][i] = msg.pressure;
     newDataPressure[1][i + 1] = null;
