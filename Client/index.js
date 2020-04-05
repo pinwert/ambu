@@ -41,7 +41,7 @@ function sendMessage(io) {
         ie,
         frequency,
       });
-      writer.write(data);
+      if (process.env.WRITE_CSV !== "false") writer.write(data);
     }
   });
 }
