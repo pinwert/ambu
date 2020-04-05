@@ -3,14 +3,12 @@
   <head>
     <title>RADU</title>
     <link rel="stylesheet" href="/main.css" />
-    <link rel="stylesheet" href="/uplot.css" />
-    <style></style>
   </head>
 
   <body>
     <div class="charts">
-      <div id="pressureChart" class="chart"></div>
-      <div id="flowChart" class="chart"></div>
+      <div id="pressureChart" class="chart"><canvas id="canvasPressure"></canvas></div>
+      <div id="flowChart" class="chart"><canvas id="canvasFlow"></canvas></div>
     </div>
     <div class="info">
       <div class="row">
@@ -94,7 +92,7 @@
       </div>
     </div>
     <script src="/socket.io-1.2.0.js"></script>
-    <script src="/uplot.iife.min.js"></script>
+    <script src="/Chart.min.js"></script>
     <script src="/main.js"></script>
   </body>
 </html>

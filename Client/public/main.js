@@ -1,10 +1,19 @@
 const numberOfPoints = 400;
 const sampling = 10;
-const dataFlow = [[], [], []];
-const dataPressure = [[], []];
+const labels=[];
 const dataToSend = {
   field: "",
   value: "",
+};
+
+const chartColors = {
+  red: "rgb(255, 99, 132, 1)",
+  orange: "rgb(255, 159, 64, 1)",
+  yellow: "rgb(255, 205, 86, 1)",
+  green: "rgb(75, 192, 192, 1)",
+  blue: "rgb(54, 162, 235, 1)",
+  purple: "rgb(153, 102, 255, 1)",
+  grey: "rgb(201, 203, 207, 1)"
 };
 
 const dataAccepted = [
@@ -18,80 +27,62 @@ const dataAccepted = [
   "pressure_max",
 ];
 
-for (var j = 0; j <= numberOfPoints; j++) {
-  dataFlow[0][j] = j;
-  dataPressure[0][j] = j;
-}
 
-const optsFlow = {
-  width: window.innerWidth * 0.8 - 40,
-  height: window.innerHeight * 0.5 - 60,
-  scales: {
-    x: {
-      time: false,
-    },
+for (var j = 0; j <= numberOfPoints; j++) {
+  labels[j] = j;
+}
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  animation: {
+    duration: 0
   },
-  series: [
-    {},
-    {
-      label: "Flow ins",
-      stroke: "red",
-      fill: "rgba(255,0,0,0.1)",
+  hover: {
+    animationDuration: 0
+  },
+  responsiveAnimationDuration: 0,
+  elements: {
+    point: {
+      radius: 0
     },
-    {
-      label: "Flow ex",
-      stroke: "green",
-      fill: "rgba(0,255,0,0.1)",
-    },
-  ],
-  axes: [
-    {},
-    {
-      space: 10,
-      show: true,
-      label: "Flow ins, Flow ex",
-      labelSize: 30,
-      labelFont: "bold 12px Arial",
-      font: "8px Arial",
-      gap: 5,
-      size: 50,
-      stroke: "black",
-    },
-  ],
+    line: {
+      tension: 0 // disables bezier curves
+    }
+  },
+  ticks: {
+    maxRotation: 0
+  }
+};
+const configPressure = {
+  type: "line",
+  data: {
+    labels,
+    datasets: [
+      {
+        label: "Pressure",
+        backgroundColor: chartColors.blue,
+        fill: true,
+        data: Array(numberOfPoints).fill(null)
+      }
+    ]
+  },
+  options: chartOptions
 };
 
-const optsPressure = {
-  width: window.innerWidth * 0.8 - 40,
-  height: window.innerHeight * 0.5 - 60,
-  scales: {
-    x: {
-      time: false,
-    },
+const  configFlow = {
+  type: 'scatter',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Flow_ins / Flow_ex',
+      backgroundColor: (chartColors.red).replace('1)', '0.2)'),
+      borderColor: chartColors.red,
+      pointBackgroundColor: chartColors.red,
+      showLine: true,
+      data: []
+    }]
   },
-  series: [
-    {},
-    {
-      scale: 0.01,
-      side: 0.01,
-      label: "pressure",
-      stroke: "blue",
-      fill: "rgba(0,0,255,0.1)",
-    },
-  ],
-  axes: [
-    {},
-    {
-      space: 10,
-      show: true,
-      label: "Pressure",
-      labelSize: 30,
-      labelFont: "bold 12px Arial",
-      font: "8px Arial",
-      gap: 5,
-      size: 50,
-      stroke: "black",
-    },
-  ],
+  options: chartOptions
 };
 
 window.onload = () => {
@@ -135,29 +126,21 @@ window.onload = () => {
   const socket = io();
   // ***** Draw the charts ***** //
 
-  const newDataFlow = [...dataFlow];
-  const newDataPressure = [...dataPressure];
-
-  const flow = new uPlot(
-    optsFlow,
-    dataFlow,
-    document.getElementById("flowChart")
-  );
-  const pressure = new uPlot(
-    optsPressure,
-    dataPressure,
-    document.getElementById("pressureChart")
-  );
+  const ctx1 = document.getElementById("canvasPressure").getContext("2d");
+  const pressure = new Chart(ctx1, configPressure);
+  const ctx2 = document.getElementById("canvasFlow").getContext("2d");
+  const flow = new Chart(ctx2, configFlow);
+  
+  const data_pressure = configPressure.data.datasets[0].data;
+  let data_flow = configFlow.data.datasets[0].data;
 
   let i = 0;
   socket.on("data", (msg) => {
-    newDataFlow[1][i] = msg.flow_ins;
-    newDataFlow[2][i] = msg.flow_ex;
-    newDataFlow[1][i + 1] = null;
-    newDataFlow[2][i + 1] = null;
+    data_pressure[i] = msg.pressure;
+    data_pressure[i + 1] = null;
+    data_flow[i] = {x: msg.flow_ins, y: msg.flow_ex};
+    data_flow[i + 1] = null;
 
-    newDataPressure[1][i] = msg.pressure;
-    newDataPressure[1][i + 1] = null;
     i++;
 
     if (i > numberOfPoints) {
@@ -166,29 +149,20 @@ window.onload = () => {
 
     if (i % 10 === 0) {
       const pointCicle = (1000 / sampling) * (1 / msg.frequency);
-      inputsShow.volume_cicle_ins.value = (
+      const volume = (
         [
-          ...newDataFlow[1].slice(i > pointCicle ? i - pointCicle : 0, i + 1),
+          ...[...data_flow].slice(i > pointCicle ? i - pointCicle : 0, i + 1),
           ...(i < pointCicle
-            ? newDataFlow[1].slice(
-                newDataFlow[1].length - pointCicle + i - 1,
+            ? [...data_flow].slice(
+              data_flow.length - pointCicle + i - 1,
                 numberOfPoints
               )
             : []),
-        ].reduce((a, b) => (Number(b) ? a + Number(b) : a), 0) * pointCicle
-      ).toFixed(2);
-
-      inputsShow.volume_cicle_ex.value = (
-        [
-          ...newDataFlow[2].slice(i > pointCicle ? i - pointCicle : 0, i + 1),
-          ...(i < pointCicle
-            ? newDataFlow[2].slice(
-                newDataFlow[2].length - pointCicle + i - 1,
-                numberOfPoints
-              )
-            : []),
-        ].reduce((a, b) => (Number(b) ? a + Number(b) : a), 0) * pointCicle
-      ).toFixed(2);
+        ].reduce((a, b) => (b && Number(b.x) && Number(b.y) ? {ins: a.ins + Number(b.x), ex: a.ex + Number(b.y)} : a), {ins:0,ex:0})
+      );
+      console.log(',,..-,-.,-,.,-,-.',volume);
+      inputsShow.volume_cicle_ins.value = (volume.ins * pointCicle).toFixed(2);
+      inputsShow.volume_cicle_ex.value = (volume.ex * pointCicle).toFixed(2);
 
       const s = msg.time / 1000;
       const min = Math.floor((s / 60) << 0);
@@ -197,11 +171,11 @@ window.onload = () => {
     }
 
     if (i % 3 === 0) {
-      flow.setData(newDataFlow);
-      pressure.setData(newDataPressure);
-      inputsShow.pressure.value = newDataPressure[1][i - 1];
-      inputsShow.flow_ins.value = newDataFlow[1][i - 1];
-      inputsShow.flow_ex.value = newDataFlow[2][i - 1];
+      flow.update();
+      pressure.update();
+      inputsShow.pressure.value = data_pressure[i ? i - 1: data_flow.length-1];
+      inputsShow.flow_ins.value = data_flow[i ? i - 1: data_flow.length-1].x;
+      inputsShow.flow_ex.value = data_flow[i ? i - 1: data_flow.length-1].y;
     }
   });
 

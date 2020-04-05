@@ -11,7 +11,7 @@ int _delay = 10;
 void loop()
 {
   // **** Signal example emit ****
-  sendSignal(float(sin(i * 0.05) + 1), float(sin(i * 0.05) + 1), float(cos(i * 0.05) + 1), millis(), 0, 0.25);
+  sendSignal(float(sin(i * 0.05) + 1), float(sin(i * 0.06) + 1), float(cos(i * 0.05) + 1), millis(), 0, 0.25);
   i++;
   // **** * ****
 
