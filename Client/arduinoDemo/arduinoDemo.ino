@@ -88,6 +88,11 @@ void readData()
         //TODO action
         mirror(Ary);
       }
+      else if (Ary[0].equals("volume_emb"))
+      {
+        //TODO action
+        mirror(Ary);
+      }
       else if (Ary[0].equals("halt"))
       {
         //TODO action

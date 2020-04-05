@@ -11,6 +11,7 @@ const dataAccepted = [
   "ie_ins",
   "ie_ex",
   "embolado",
+  "volume_emb",
   "halt",
   "volume_min",
   "volume_max",
@@ -110,12 +111,27 @@ window.onload = () => {
     ie_ins: document.getElementById("ie_ins"),
     ie_ex: document.getElementById("ie_ex"),
     embolado: document.getElementById("embolado"),
+    volume_emb: document.getElementById("volume_emb"),
     halt: document.getElementById("halt"),
     volume_min: document.getElementById("volume_min"),
     volume_max: document.getElementById("volume_max"),
     pressure_min: document.getElementById("pressure_min"),
     pressure_max: document.getElementById("pressure_max"),
   };
+
+  // ***** ----------- ***** //
+
+  // ***** default values ***** //
+  inputs.ie_ins.value=1;
+  inputs.ie_ex.value=2;
+  inputs.embolado.value=20;
+  inputs.volume_emb.value=0;
+  inputs.halt.value=0;
+  inputs.volume_min.value=0;
+  inputs.volume_max.value=0;
+  inputs.pressure_min.value=0;
+  inputs.pressure_max.value=0;
+
 
   // ***** ----------- ***** //
 
