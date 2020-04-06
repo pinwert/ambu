@@ -1,21 +1,32 @@
 {
   "name": "radu-project",
   "version": "0.0.1",
-  "description": "my first socket.io app",
+  "description": "first version of RADU",
+  "homepage": "https://github.com/pinwert/ambu",
+  "author": {
+    "name": "Pinwert",
+    "email": "pinwert@github.com"
+  },
+  "repository": {
+    "url": "https://github.com/pinwert/ambu"
+  },
   "main": "main.js",
   "license": "CC0-1.0",
   "dependencies": {
     "chart.js": "^2.9.3",
     "csv-write-stream": "^2.0.0",
-    "electron": "^8.2.0",
-    "express": "^4.15.2",
-    "serialport": "^8.0.7",
-    "socket.io": "^1.7.3"
+    "serialport": "^8.0.7"
   },
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps"
   },
   "devDependencies": {
+    "electron": "^8.2.0",
+    "electron-builder": "^22.4.1",
     "electron-rebuild": "^1.10.1"
+  },
+  "build": {
+    "npmRebuild": false
   }
 }

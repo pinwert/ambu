@@ -9,13 +9,6 @@ const writer = csvWriter({
   headers: ["pressure", "flow_ins", "flow_ex", "time", "ie", "frequency"],
   sendHeaders: true,
 });
-const portS = new SerialPort(process.env.SERIAL_PORT, { baudRate });
-
-const parser = new Readline();
-portS.pipe(parser);
-
-// -------------------------------------------
-
 const numberOfPoints = 400;
 const sampling = 10;
 const dataFlow = [[], [], []];
@@ -121,7 +114,40 @@ const optsPressure = {
   ],
 };
 
+// const portS = new SerialPort(process.env.SERIAL_PORT, { baudRate });
+
+var getPortsList = (callback) => {
+  var portsList = [];
+
+  SerialPort.list().then((ports) => {
+    ports.forEach((port) => {
+      portsList.push(port.path);
+    });
+    callback(portsList);
+  });
+};
+
 window.onload = () => {
+  getPortsList((ports) => {
+    const setup_panel = document.getElementById("setup_panel");
+    const selectPort = document.getElementById("serial_ports");
+    const info_panel = document.getElementById("info_panel");
+    console.log(ports);
+    ports.forEach((p) => {
+      selectPort.innerHTML += ` <option value="${p}">${p}</option>`;
+    });
+    selectPort.onchange = (e) => {
+      const portS = new SerialPort(e.currentTarget.value, { baudRate });
+      const parser = new Readline();
+      portS.pipe(parser);
+      setup_panel.style.display = "none";
+      info_panel.style.display = "flex";
+      init(portS, parser);
+    };
+  });
+};
+// -------------------------------------------
+function init(portS, parser) {
   // ***** info inputs ***** //
 
   const inputsShow = {
@@ -311,7 +337,7 @@ window.onload = () => {
 
   parser.on("data", (line) => {
     const data = line.slice(0, -1).split(",");
-    if (!Number(data[0]) && data[0] !== "0.00") {
+    if (!Number(data[0]) && Number(data[0]) != 0) {
       const [key, value] = data;
       receiveValue({ key, value });
     } else {
@@ -327,4 +353,4 @@ window.onload = () => {
       if (process.env.WRITE_CSV !== "false") writer.write(data);
     }
   });
-};
+}

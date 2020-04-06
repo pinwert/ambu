@@ -12,7 +12,14 @@
       <div id="flowChart" class="chart"></div>
       <div id="pressureChart" class="chart"></div>
     </div>
-    <div class="info">
+    <div class="setup" id="setup_panel">
+      <div class="row">
+        <label class="label">Serial ports:</label>
+        <select id="serial_ports"></select>
+      </div>
+    </div>
+
+    <div class="info" id="info_panel">
       <div class="row">
         <label class="pressure">Pressure</label>
         <input id="pressure" disabled="true" />
