@@ -1,3 +1,21 @@
+const baudRate = 115200;
+const SerialPort = require("serialport");
+const Readline = require("@serialport/parser-readline");
+const fs = require("fs");
+const csvWriter = require("csv-write-stream");
+const writer = csvWriter({
+  separator: ",",
+  newline: "\n",
+  headers: ["pressure", "flow_ins", "flow_ex", "time", "ie", "frequency"],
+  sendHeaders: true,
+});
+const portS = new SerialPort(process.env.SERIAL_PORT, { baudRate });
+
+const parser = new Readline();
+portS.pipe(parser);
+
+// -------------------------------------------
+
 const numberOfPoints = 400;
 const sampling = 10;
 const dataFlow = [[], [], []];
@@ -155,7 +173,6 @@ window.onload = () => {
 
   // ***** ----------- ***** //
 
-  const socket = io();
   // ***** Draw the charts ***** //
 
   const newDataFlow = [...dataFlow];
@@ -173,7 +190,7 @@ window.onload = () => {
   );
 
   let i = 0;
-  socket.on("data", (msg) => {
+  const receiveData = (msg) => {
     newDataFlow[1][i] = msg.flow_ins;
     newDataFlow[2][i] = msg.flow_ex;
     newDataFlow[1][i + 1] = null;
@@ -227,7 +244,7 @@ window.onload = () => {
       inputsShow.flow_ins.value = newDataFlow[1][i - 1];
       inputsShow.flow_ex.value = newDataFlow[2][i - 1];
     }
-  });
+  };
 
   // ***** ----------- ***** //
 
@@ -243,7 +260,7 @@ window.onload = () => {
       dataToSend.value = e.currentTarget.value;
       keyboard.field_name.innerHTML = dataToSend.field;
       keyboard.num_box.innerHTML = dataToSend.value;
-      socket.emit("data", `${key},${e.currentTarget.value}\n`);
+      portS.write(`${key},${e.currentTarget.value}\n`);
     };
     inputs[key].onfocus = (e) => {
       dataToSend.field = e.currentTarget.id;
@@ -277,18 +294,37 @@ window.onload = () => {
 
   keyboard.send.onclick = (e) => {
     if (dataAccepted.includes(dataToSend.field)) {
-      socket.emit("data", `${dataToSend.field},${dataToSend.value}\n`);
+      portS.write(`${dataToSend.field},${dataToSend.value}\n`);
     }
   };
 
-  socket.on("value", (msg) => {
+  const receiveValue = (msg) => {
     console.log("------>", msg);
     if (msg.key === dataToSend.field) {
       dataToSend.value = msg.value;
       keyboard.num_box.innerHTML = dataToSend.value;
     }
     inputs[msg.key].value = msg.value;
-  });
+  };
 
   // ***** ----------- ***** //
+
+  parser.on("data", (line) => {
+    const data = line.slice(0, -1).split(",");
+    if (!Number(data[0]) && data[0] !== "0.00") {
+      const [key, value] = data;
+      receiveValue({ key, value });
+    } else {
+      const [pressure, flow_ins, flow_ex, time, ie, frequency] = data;
+      receiveData({
+        pressure,
+        flow_ins,
+        flow_ex,
+        time,
+        ie,
+        frequency,
+      });
+      if (process.env.WRITE_CSV !== "false") writer.write(data);
+    }
+  });
 };
