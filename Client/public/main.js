@@ -149,6 +149,7 @@ window.onload = () => {
 };
 // -------------------------------------------
 function init(portS, parser) {
+  writer.pipe(fs.createWriteStream("out.csv"));
   // ***** info inputs ***** //
 
   const inputsShow = {
@@ -317,7 +318,7 @@ function init(portS, parser) {
   Object.keys(buttons).forEach((b) => {
     buttons[b].onclick = (e) => {
       console.log("......", e.currentTarget.dataset);
-      socket.emit("data", `${e.currentTarget.dataset.data}\n`);
+      portS.write(`${e.currentTarget.dataset.data}\n`);
     };
   });
 
