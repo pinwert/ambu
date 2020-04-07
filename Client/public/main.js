@@ -133,7 +133,7 @@ window.onload = () => {
     const setup_panel = document.getElementById("setup_panel");
     const selectPort = document.getElementById("serial_ports");
     const info_panel = document.getElementById("info_panel");
-    console.log(ports);
+    selectPort.innerHTML += ` <option value=""></option>`;
     ports.forEach((p) => {
       selectPort.innerHTML += ` <option value="${p}">${p}</option>`;
     });
