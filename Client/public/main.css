@@ -41,6 +41,7 @@ body {
   justify-content: space-between;
   margin: 5px;
   max-width: 100%;
+  min-width: 100%;
   align-items: center;
 }
 
@@ -109,4 +110,15 @@ td.btn {
 table {
   width: 100%;
   margin-top: 2px;
+}
+button {
+  color: white;
+  padding: 10px;
+  width: 45%;
+}
+#start {
+  background-color: green;
+}
+#stop {
+  background-color: red;
 }

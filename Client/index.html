@@ -64,10 +64,14 @@
         <input class="double" id="pressure_min" type="number" step="0.01" />
         <input class="double" id="pressure_max" type="number" step="0.01" />
       </div>
+      <div class="row">
+        <button id="start" data-data="arranque,1">Start</button>
+        <button id="stop" data-data="arranque,0">Stop</button>
+      </div>
       <div id="keypad">
         <div class="row">
           <div id="field_name"></div>
-          <div id="num_box"></div>
+          <input id="num_box" />
         </div>
         <table>
           <tr>

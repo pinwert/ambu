@@ -73,6 +73,11 @@ void readData()
   {
     if (msg.charAt(j) == '\n')
     {
+      if (Ary[0].equals("arranque"))
+      {
+        //TODO action
+        mirror(Ary);
+      }
       if (Ary[0].equals("ie_ins"))
       {
         //TODO action

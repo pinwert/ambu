@@ -9,6 +9,7 @@ const dataToSend = {
 };
 
 const dataAccepted = [
+  "arranque",
   "ie_ins",
   "ie_ex",
   "embolado",
@@ -126,6 +127,10 @@ window.onload = () => {
     pressure_min: document.getElementById("pressure_min"),
     pressure_max: document.getElementById("pressure_max"),
   };
+  const buttons = {
+    start: document.getElementById("start"),
+    stop: document.getElementById("stop"),
+  };
 
   // ***** ----------- ***** //
 
@@ -242,19 +247,27 @@ window.onload = () => {
       dataToSend.field = e.currentTarget.id;
       dataToSend.value = e.currentTarget.value;
       keyboard.field_name.innerHTML = dataToSend.field;
-      keyboard.num_box.innerHTML = dataToSend.value;
+      keyboard.num_box.value = dataToSend.value;
       socket.emit("data", `${key},${e.currentTarget.value}\n`);
     };
     inputs[key].onfocus = (e) => {
       dataToSend.field = e.currentTarget.id;
       dataToSend.value = e.currentTarget.value;
       keyboard.field_name.innerHTML = dataToSend.field;
-      keyboard.num_box.innerHTML = dataToSend.value;
+      keyboard.num_box.value = dataToSend.value;
       if (keyboard.keypad.style.display == "none") {
         keyboard.keypad.style.display = "flex";
       }
     };
   });
+
+  Object.keys(buttons).forEach((b) => {
+    buttons[b].onclick = (e) => {
+      console.log("......", e.currentTarget.dataset);
+      socket.emit("data", `${e.currentTarget.dataset.data}\n`);
+    };
+  });
+
   keyboard.keys.forEach((k) => {
     k.onclick = (e) => {
       dataToSend.value += e.currentTarget.innerHTML;
@@ -264,7 +277,6 @@ window.onload = () => {
 
   keyboard.keys.forEach((k) => {
     k.onclick = (e) => {
-      console.log("------>", e.currentTarget);
       dataToSend.value += e.currentTarget.innerHTML;
       keyboard.num_box.innerHTML = dataToSend.value;
     };
