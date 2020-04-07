@@ -158,6 +158,12 @@ window.onload = () => {
     keys: document.querySelectorAll("#keypad .key"),
   };
 
+  keyboard.keypad.onclick = (e) => {
+    if (e.target === keyboard.keypad) {
+      keyboard.keypad.style.display = "none";
+    }
+  };
+
   // ***** ----------- ***** //
 
   const socket = io();
@@ -242,6 +248,10 @@ window.onload = () => {
     keyboard.keypad.style.display = "none";
   }
 
+  keyboard.num_box.onchange = (e) => {
+    dataToSend.value = e.currentTarget.value;
+  };
+
   Object.keys(inputs).forEach((key) => {
     inputs[key].onchange = (e) => {
       dataToSend.field = e.currentTarget.id;
@@ -271,25 +281,26 @@ window.onload = () => {
   keyboard.keys.forEach((k) => {
     k.onclick = (e) => {
       dataToSend.value += e.currentTarget.innerHTML;
-      keyboard.num_box.innerHTML = dataToSend.value;
+      keyboard.num_box.value = dataToSend.value;
     };
   });
 
   keyboard.keys.forEach((k) => {
     k.onclick = (e) => {
       dataToSend.value += e.currentTarget.innerHTML;
-      keyboard.num_box.innerHTML = dataToSend.value;
+      keyboard.num_box.value = dataToSend.value;
     };
   });
 
   keyboard.delete.onclick = (e) => {
     dataToSend.value = dataToSend.value.slice(0, -1);
-    keyboard.num_box.innerHTML = dataToSend.value;
+    keyboard.num_box.value = dataToSend.value;
   };
 
   keyboard.send.onclick = (e) => {
     if (dataAccepted.includes(dataToSend.field)) {
       socket.emit("data", `${dataToSend.field},${dataToSend.value}\n`);
+      keyboard.keypad.style.display = "none";
     }
   };
 
@@ -297,7 +308,7 @@ window.onload = () => {
     console.log("------>", msg);
     if (msg.key === dataToSend.field) {
       dataToSend.value = msg.value;
-      keyboard.num_box.innerHTML = dataToSend.value;
+      keyboard.num_box.value = dataToSend.value;
     }
     inputs[msg.key].value = msg.value;
   });
