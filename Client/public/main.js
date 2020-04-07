@@ -20,6 +20,7 @@ const dataToSend = {
 };
 
 const dataAccepted = [
+  "arranque",
   "ie_ins",
   "ie_ex",
   "embolado",
@@ -170,6 +171,10 @@ function init(portS, parser) {
     pressure_min: document.getElementById("pressure_min"),
     pressure_max: document.getElementById("pressure_max"),
   };
+  const buttons = {
+    start: document.getElementById("start"),
+    stop: document.getElementById("stop"),
+  };
 
   // ***** ----------- ***** //
 
@@ -195,6 +200,12 @@ function init(portS, parser) {
     send: document.getElementById("send"),
     delete: document.getElementById("delete"),
     keys: document.querySelectorAll("#keypad .key"),
+  };
+
+  keyboard.keypad.onclick = (e) => {
+    if (e.target === keyboard.keypad) {
+      keyboard.keypad.style.display = "none";
+    }
   };
 
   // ***** ----------- ***** //
@@ -280,47 +291,59 @@ function init(portS, parser) {
     keyboard.keypad.style.display = "none";
   }
 
+  keyboard.num_box.onchange = (e) => {
+    dataToSend.value = e.currentTarget.value;
+  };
+
   Object.keys(inputs).forEach((key) => {
     inputs[key].onchange = (e) => {
       dataToSend.field = e.currentTarget.id;
       dataToSend.value = e.currentTarget.value;
       keyboard.field_name.innerHTML = dataToSend.field;
-      keyboard.num_box.innerHTML = dataToSend.value;
+      keyboard.num_box.value = dataToSend.value;
       portS.write(`${key},${e.currentTarget.value}\n`);
     };
     inputs[key].onfocus = (e) => {
       dataToSend.field = e.currentTarget.id;
       dataToSend.value = e.currentTarget.value;
       keyboard.field_name.innerHTML = dataToSend.field;
-      keyboard.num_box.innerHTML = dataToSend.value;
+      keyboard.num_box.value = dataToSend.value;
       if (keyboard.keypad.style.display == "none") {
         keyboard.keypad.style.display = "flex";
       }
     };
   });
-  keyboard.keys.forEach((k) => {
-    k.onclick = (e) => {
-      dataToSend.value += e.currentTarget.innerHTML;
-      keyboard.num_box.innerHTML = dataToSend.value;
+
+  Object.keys(buttons).forEach((b) => {
+    buttons[b].onclick = (e) => {
+      console.log("......", e.currentTarget.dataset);
+      socket.emit("data", `${e.currentTarget.dataset.data}\n`);
     };
   });
 
   keyboard.keys.forEach((k) => {
     k.onclick = (e) => {
-      console.log("------>", e.currentTarget);
       dataToSend.value += e.currentTarget.innerHTML;
-      keyboard.num_box.innerHTML = dataToSend.value;
+      keyboard.num_box.value = dataToSend.value;
+    };
+  });
+
+  keyboard.keys.forEach((k) => {
+    k.onclick = (e) => {
+      dataToSend.value += e.currentTarget.innerHTML;
+      keyboard.num_box.value = dataToSend.value;
     };
   });
 
   keyboard.delete.onclick = (e) => {
     dataToSend.value = dataToSend.value.slice(0, -1);
-    keyboard.num_box.innerHTML = dataToSend.value;
+    keyboard.num_box.value = dataToSend.value;
   };
 
   keyboard.send.onclick = (e) => {
     if (dataAccepted.includes(dataToSend.field)) {
       portS.write(`${dataToSend.field},${dataToSend.value}\n`);
+      keyboard.keypad.style.display = "none";
     }
   };
 
@@ -328,7 +351,7 @@ function init(portS, parser) {
     console.log("------>", msg);
     if (msg.key === dataToSend.field) {
       dataToSend.value = msg.value;
-      keyboard.num_box.innerHTML = dataToSend.value;
+      keyboard.num_box.value = dataToSend.value;
     }
     inputs[msg.key].value = msg.value;
   };
