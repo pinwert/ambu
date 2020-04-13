@@ -287,9 +287,10 @@ function init(portS, parser) {
     if (i % 3 === 0) {
       flow.setData(newDataFlow);
       pressure.setData(newDataPressure);
-      inputsShow.pressure.value = newDataPressure[1][i - 1];
-      inputsShow.flow_ins.value = newDataFlow[1][i - 1];
-      inputsShow.flow_ex.value = newDataFlow[2][i - 1];
+      const index = i > 0 ? i - 1 : numberOfPoints - 1;
+      inputsShow.pressure.value = newDataPressure[1][index];
+      inputsShow.flow_ins.value = newDataFlow[1][index];
+      inputsShow.flow_ex.value = newDataFlow[2][index];
     }
   };
 
