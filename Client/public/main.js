@@ -18,8 +18,8 @@ const writer = csvWriter({
   ],
   sendHeaders: true,
 });
-const numberOfPoints = 300;
-const sampling = 10;
+const numberOfPoints = 150;
+const sampling = 100;
 const dataFlow = [[], [], []];
 const dataPressure = [[], []];
 const times = [];
