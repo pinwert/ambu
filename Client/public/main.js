@@ -6,10 +6,19 @@ const csvWriter = require("csv-write-stream");
 const writer = csvWriter({
   separator: ",",
   newline: "\n",
-  headers: ["pressure", "flow_ins", "flow_ex", "time", "ie", "frequency"],
+  headers: [
+    "pressure",
+    "flow_ins",
+    "derived_flow_ins",
+    "flow_ex",
+    "derived_flow_ex",
+    "time",
+    "ie",
+    "frequency",
+  ],
   sendHeaders: true,
 });
-const numberOfPoints = 400;
+const numberOfPoints = 300;
 const sampling = 10;
 const dataFlow = [[], [], []];
 const dataPressure = [[], []];
@@ -39,7 +48,7 @@ for (var j = 0; j <= numberOfPoints; j++) {
 }
 
 const optsFlow = {
-  width: window.innerWidth * 0.8 - 40,
+  width: window.innerWidth * 0.7 - 40,
   height: window.innerHeight * 0.5 - 60,
   scales: {
     x: {
@@ -78,7 +87,7 @@ const optsFlow = {
 };
 
 const optsPressure = {
-  width: window.innerWidth * 0.8 - 40,
+  width: window.innerWidth * 0.7 - 40,
   height: window.innerHeight * 0.5 - 60,
   scales: {
     x: {
@@ -149,7 +158,7 @@ window.onload = () => {
 };
 // -------------------------------------------
 function init(portS, parser) {
-  writer.pipe(fs.createWriteStream("out.csv"));
+  writer.pipe(fs.createWriteStream(`out-${Date.now()}.csv`));
   // ***** info inputs ***** //
 
   const inputsShow = {
@@ -354,7 +363,7 @@ function init(portS, parser) {
       dataToSend.value = msg.value;
       keyboard.num_box.value = dataToSend.value;
     }
-    inputs[msg.key].value = msg.value;
+    if (inputs[msg.key]) inputs[msg.key].value = msg.value;
   };
 
   // ***** ----------- ***** //
@@ -365,11 +374,22 @@ function init(portS, parser) {
       const [key, value] = data;
       receiveValue({ key, value });
     } else {
-      const [pressure, flow_ins, flow_ex, time, ie, frequency] = data;
+      const [
+        pressure,
+        flow_ins,
+        derivada_flow_ins,
+        flow_ex,
+        derivada_flow_ex,
+        time,
+        ie,
+        frequency,
+      ] = data;
       receiveData({
         pressure,
         flow_ins,
+        derivada_flow_ins,
         flow_ex,
+        derivada_flow_ex,
         time,
         ie,
         frequency,

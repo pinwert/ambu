@@ -27,6 +27,14 @@
     "electron-rebuild": "^1.10.1"
   },
   "build": {
-    "npmRebuild": false
+    "npmRebuild": false,
+    "linux": {
+      "target": {
+        "target": "appimage",
+        "arch": [
+          "armv7l"
+        ]
+      }
+    }
   }
 }
