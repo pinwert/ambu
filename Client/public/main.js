@@ -140,7 +140,7 @@ const getPortsList = (callback) => {
 };
 
 let portRead, portWrite, parserRead, parserWrite;
-const values = {
+let values = {
   marcha: 1,
   ie_ins: 1,
   ie_ex: 1,
@@ -306,6 +306,7 @@ function initRead(portRead, parserRead) {
         frequency,
         value_o2,
       });
+      console.log("---------> Read", line);
       if (process.env.WRITE_CSV !== "false") writer.write(data);
     }
   });
@@ -326,6 +327,7 @@ function initWrite(portWrite, parserWrite) {
     pressure_max: document.getElementById("pressure_max"),
     FI_O2: document.getElementById("FI_O2"),
   };
+
   const buttons = {
     start: document.getElementById("start"),
     stop: document.getElementById("stop"),
@@ -334,7 +336,9 @@ function initWrite(portWrite, parserWrite) {
   // ***** ----------- ***** //
 
   // ***** default values ***** //
-
+  // Object.keys[values].forEach((k) => {
+  //   if (inputs[k]) inputs[k].value = values[k];
+  // });
   // ***** ----------- ***** //
   // ***** keyboard ***** //
 
@@ -371,7 +375,9 @@ function initWrite(portWrite, parserWrite) {
       dataToSend.value = e.currentTarget.value;
       keyboard.field_name.innerHTML = dataToSend.field;
       keyboard.num_box.value = dataToSend.value;
-      portS.write(`${key},${e.currentTarget.value}\n`);
+
+      values[key] = e.currentTarget.value;
+      portWrite.write(`<${valuesToSend()}>\n`);
     };
     inputs[key].onfocus = (e) => {
       dataToSend.field = e.currentTarget.id;
@@ -435,6 +441,7 @@ function initWrite(portWrite, parserWrite) {
       ins_acc = 0;
       ex_acc = 0;
     }
+    console.log("---------> Write", line);
   });
   // ***** ----------- ***** //
 }
