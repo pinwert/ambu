@@ -336,9 +336,9 @@ function initWrite(portWrite, parserWrite) {
   // ***** ----------- ***** //
 
   // ***** default values ***** //
-  // Object.keys[values].forEach((k) => {
-  //   if (inputs[k]) inputs[k].value = values[k];
-  // });
+  Object.keys(values).forEach((k) => {
+    if (inputs[k]) inputs[k].value = values[k];
+  });
   // ***** ----------- ***** //
   // ***** keyboard ***** //
 
@@ -440,14 +440,14 @@ function initWrite(portWrite, parserWrite) {
       inputsShow.volume_cicle_ex.value = ex_acc.toFixed(2);
       ins_acc = 0;
       ex_acc = 0;
+      console.log("---------> Write", line);
     }
-    console.log("---------> Write", line);
   });
   // ***** ----------- ***** //
 }
 
 function updateValues(msg) {
-  Object.keys[values].forEach((k) => {
+  Object.keys(values).forEach((k) => {
     values[k] = msg[k];
     if (inputs[k]) inputs[k].value = msg[k];
   });
