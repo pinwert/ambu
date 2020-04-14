@@ -15,6 +15,7 @@ const writer = csvWriter({
     "time",
     "ie",
     "frequency",
+    "value_o2",
   ],
   sendHeaders: true,
 });
@@ -29,7 +30,7 @@ const dataToSend = {
 };
 
 const dataAccepted = [
-  "arranque",
+  "marcha",
   "ie_ins",
   "ie_ex",
   "embolado",
@@ -39,6 +40,7 @@ const dataAccepted = [
   "volume_max",
   "pressure_min",
   "pressure_max",
+  "FI_O2",
 ];
 
 for (var j = 0; j <= numberOfPoints; j++) {
@@ -126,7 +128,7 @@ const optsPressure = {
 
 // const portS = new SerialPort(process.env.SERIAL_PORT, { baudRate });
 
-var getPortsList = (callback) => {
+const getPortsList = (callback) => {
   var portsList = [];
 
   SerialPort.list().then((ports) => {
@@ -137,85 +139,84 @@ var getPortsList = (callback) => {
   });
 };
 
+let portRead, portWrite, parserRead, parserWrite;
+const values = {
+  marcha: 1,
+  ie_ins: 1,
+  ie_ex: 1,
+  halt: 0.2,
+  embolado: 15,
+  volume_emb: 50,
+  volume_min: 0,
+  volume_max: 0,
+  pressure_min: 0,
+  pressure_max: 0,
+  FI_O2: 0,
+};
+
+let inputs = {};
+let inputsShow = {};
+
+let t0, ins_v0, ins_acc, ex_v0, ex_acc;
+
 window.onload = () => {
   getPortsList((ports) => {
     const setup_panel = document.getElementById("setup_panel");
-    const selectPort = document.getElementById("serial_ports");
+    const selectPortRead = document.getElementById("serial_ports1");
+    const selectPortWrite = document.getElementById("serial_ports2");
     const info_panel = document.getElementById("info_panel");
-    selectPort.innerHTML += ` <option value=""></option>`;
+
+    selectPortRead.innerHTML += ` <option value=""></option>`;
     ports.forEach((p) => {
-      selectPort.innerHTML += ` <option value="${p}">${p}</option>`;
+      selectPortRead.innerHTML += ` <option value="${p}">${p}</option>`;
     });
-    selectPort.onchange = (e) => {
-      const portS = new SerialPort(e.currentTarget.value, { baudRate });
-      const parser = new Readline();
-      portS.pipe(parser);
-      setup_panel.style.display = "none";
-      info_panel.style.display = "flex";
-      init(portS, parser);
+
+    selectPortRead.onchange = (e) => {
+      portRead = new SerialPort(e.currentTarget.value, { baudRate });
+      parserRead = new Readline();
+      portRead.pipe(parserRead);
+      if (portWrite && parserWrite) {
+        setup_panel.style.display = "none";
+        info_panel.style.display = "flex";
+      }
+      initRead(portRead, parserRead);
+    };
+
+    selectPortWrite.innerHTML += ` <option value=""></option>`;
+    ports.forEach((p) => {
+      selectPortWrite.innerHTML += ` <option value="${p}">${p}</option>`;
+    });
+
+    selectPortWrite.onchange = (e) => {
+      portWrite = new SerialPort(e.currentTarget.value, { baudRate });
+      parserWrite = new Readline();
+      portWrite.pipe(parserWrite);
+
+      if (portRead && parserRead) {
+        setup_panel.style.display = "none";
+        info_panel.style.display = "flex";
+      }
+
+      initWrite(portWrite, parserWrite);
     };
   });
 };
+
 // -------------------------------------------
-function init(portS, parser) {
+
+function initRead(portRead, parserRead) {
   writer.pipe(fs.createWriteStream(`out-${Date.now()}.csv`));
+
   // ***** info inputs ***** //
 
-  const inputsShow = {
+  inputsShow = {
     pressure: document.getElementById("pressure"),
     flow_ins: document.getElementById("flow_ins"),
     flow_ex: document.getElementById("flow_ex"),
     time: document.getElementById("time"),
     volume_cicle_ins: document.getElementById("volume_ins"),
     volume_cicle_ex: document.getElementById("volume_ex"),
-  };
-
-  const inputs = {
-    ie_ins: document.getElementById("ie_ins"),
-    ie_ex: document.getElementById("ie_ex"),
-    embolado: document.getElementById("embolado"),
-    volume_emb: document.getElementById("volume_emb"),
-    halt: document.getElementById("halt"),
-    volume_min: document.getElementById("volume_min"),
-    volume_max: document.getElementById("volume_max"),
-    pressure_min: document.getElementById("pressure_min"),
-    pressure_max: document.getElementById("pressure_max"),
-  };
-  const buttons = {
-    start: document.getElementById("start"),
-    stop: document.getElementById("stop"),
-  };
-
-  // ***** ----------- ***** //
-
-  // ***** default values ***** //
-  inputs.ie_ins.value = 1;
-  inputs.ie_ex.value = 2;
-  inputs.embolado.value = 20;
-  inputs.volume_emb.value = 0;
-  inputs.halt.value = 0;
-  inputs.volume_min.value = 0;
-  inputs.volume_max.value = 0;
-  inputs.pressure_min.value = 0;
-  inputs.pressure_max.value = 0;
-
-  // ***** ----------- ***** //
-
-  // ***** keyboard ***** //
-
-  const keyboard = {
-    field_name: document.getElementById("field_name"),
-    num_box: document.getElementById("num_box"),
-    keypad: document.getElementById("keypad"),
-    send: document.getElementById("send"),
-    delete: document.getElementById("delete"),
-    keys: document.querySelectorAll("#keypad .key"),
-  };
-
-  keyboard.keypad.onclick = (e) => {
-    if (e.target === keyboard.keypad) {
-      keyboard.keypad.style.display = "none";
-    }
+    value_o2: document.getElementById("value_o2"),
   };
 
   // ***** ----------- ***** //
@@ -253,31 +254,6 @@ function init(portS, parser) {
     }
 
     if (i % 10 === 0) {
-      const pointCicle = (1000 / sampling) * (1 / msg.frequency);
-      inputsShow.volume_cicle_ins.value = (
-        [
-          ...newDataFlow[1].slice(i > pointCicle ? i - pointCicle : 0, i + 1),
-          ...(i < pointCicle
-            ? newDataFlow[1].slice(
-                newDataFlow[1].length - pointCicle + i - 1,
-                numberOfPoints
-              )
-            : []),
-        ].reduce((a, b) => (Number(b) ? a + Number(b) : a), 0) * pointCicle
-      ).toFixed(2);
-
-      inputsShow.volume_cicle_ex.value = (
-        [
-          ...newDataFlow[2].slice(i > pointCicle ? i - pointCicle : 0, i + 1),
-          ...(i < pointCicle
-            ? newDataFlow[2].slice(
-                newDataFlow[2].length - pointCicle + i - 1,
-                numberOfPoints
-              )
-            : []),
-        ].reduce((a, b) => (Number(b) ? a + Number(b) : a), 0) * pointCicle
-      ).toFixed(2);
-
       const s = msg.time / 1000;
       const min = Math.floor((s / 60) << 0);
       const sec = Math.floor(s % 60);
@@ -291,6 +267,89 @@ function init(portS, parser) {
       inputsShow.pressure.value = newDataPressure[1][index];
       inputsShow.flow_ins.value = newDataFlow[1][index];
       inputsShow.flow_ex.value = newDataFlow[2][index];
+      inputsShow.flow_ex.value = newDataFlow[2][index];
+      inputsShow.value_o2.value = msg.value_o2;
+    }
+    if (t0) {
+      ins_acc += ((ins_v0 + msg.flow_ins) / 2) * (msg.time - t0);
+      ex_acc += ((ex_v0 + msg.flow_ex) / 2) * (msg.time - t0);
+      ins_v0 = msg.flow_ins;
+      ex_v0 = msg.flow_ex;
+      t0 = msg.time;
+    }
+  };
+
+  // ***** ----------- ***** //
+
+  parserRead.on("data", (line) => {
+    const data = line.slice(0, -1).split(",");
+    if (Number(data[0]) || Number(data[0]) == 0) {
+      const [
+        pressure,
+        flow_ins,
+        derivada_flow_ins,
+        flow_ex,
+        derivada_flow_ex,
+        time,
+        ie,
+        frequency,
+        value_o2,
+      ] = data;
+      receiveData({
+        pressure,
+        flow_ins,
+        derivada_flow_ins,
+        flow_ex,
+        derivada_flow_ex,
+        time,
+        ie,
+        frequency,
+        value_o2,
+      });
+      if (process.env.WRITE_CSV !== "false") writer.write(data);
+    }
+  });
+}
+
+function initWrite(portWrite, parserWrite) {
+  // ***** info inputs ***** //
+
+  inputs = {
+    ie_ins: document.getElementById("ie_ins"),
+    ie_ex: document.getElementById("ie_ex"),
+    embolado: document.getElementById("embolado"),
+    volume_emb: document.getElementById("volume_emb"),
+    halt: document.getElementById("halt"),
+    volume_min: document.getElementById("volume_min"),
+    volume_max: document.getElementById("volume_max"),
+    pressure_min: document.getElementById("pressure_min"),
+    pressure_max: document.getElementById("pressure_max"),
+    FI_O2: document.getElementById("FI_O2"),
+  };
+  const buttons = {
+    start: document.getElementById("start"),
+    stop: document.getElementById("stop"),
+  };
+
+  // ***** ----------- ***** //
+
+  // ***** default values ***** //
+
+  // ***** ----------- ***** //
+  // ***** keyboard ***** //
+
+  const keyboard = {
+    field_name: document.getElementById("field_name"),
+    num_box: document.getElementById("num_box"),
+    keypad: document.getElementById("keypad"),
+    send: document.getElementById("send"),
+    delete: document.getElementById("delete"),
+    keys: document.querySelectorAll("#keypad .key"),
+  };
+
+  keyboard.keypad.onclick = (e) => {
+    if (e.target === keyboard.keypad) {
+      keyboard.keypad.style.display = "none";
     }
   };
 
@@ -327,8 +386,8 @@ function init(portS, parser) {
 
   Object.keys(buttons).forEach((b) => {
     buttons[b].onclick = (e) => {
-      console.log("......", e.currentTarget.dataset);
-      portS.write(`${e.currentTarget.dataset.data}\n`);
+      values[e.currentTarget.dataset.key] = e.currentTarget.dataset.value;
+      portWrite.write(`<${valuesToSend()}>\n`);
     };
   });
 
@@ -353,49 +412,41 @@ function init(portS, parser) {
 
   keyboard.send.onclick = (e) => {
     if (dataAccepted.includes(dataToSend.field)) {
-      portS.write(`${dataToSend.field},${dataToSend.value}\n`);
+      values[dataToSend.field] = dataToSend.value;
+      portWrite.write(`<${valuesToSend()}>\n`);
       keyboard.keypad.style.display = "none";
     }
   };
 
-  const receiveValue = (msg) => {
-    console.log("------>", msg);
-    if (msg.key === dataToSend.field) {
-      dataToSend.value = msg.value;
-      keyboard.num_box.value = dataToSend.value;
-    }
-    if (inputs[msg.key]) inputs[msg.key].value = msg.value;
-  };
-
-  // ***** ----------- ***** //
-
-  parser.on("data", (line) => {
+  parserWrite.on("data", (line) => {
     const data = line.slice(0, -1).split(",");
-    if (!Number(data[0]) && Number(data[0]) != 0) {
-      const [key, value] = data;
-      receiveValue({ key, value });
-    } else {
-      const [
-        pressure,
-        flow_ins,
-        derivada_flow_ins,
-        flow_ex,
-        derivada_flow_ex,
-        time,
-        ie,
-        frequency,
-      ] = data;
-      receiveData({
-        pressure,
-        flow_ins,
-        derivada_flow_ins,
-        flow_ex,
-        derivada_flow_ex,
-        time,
-        ie,
-        frequency,
+    if (data[0] === "<") {
+      const [marcha, ie_ins, ie_ex, halt, embolado, volume_emb] = data;
+      updateValues({
+        marcha,
+        ie_ins,
+        ie_ex,
+        halt,
+        embolado,
+        volume_emb,
       });
-      if (process.env.WRITE_CSV !== "false") writer.write(data);
+      inputsShow.volume_cicle_ins.value = ins_acc.toFixed(2);
+      inputsShow.volume_cicle_ex.value = ex_acc.toFixed(2);
+      ins_acc = 0;
+      ex_acc = 0;
     }
   });
+  // ***** ----------- ***** //
+}
+
+function updateValues(msg) {
+  Object.keys[values].forEach((k) => {
+    values[k] = msg[k];
+    if (inputs[k]) inputs[k].value = msg[k];
+  });
+}
+
+function valuesToSend() {
+  const { marcha, ie_ins, ie_ex, halt, embolado, volume_emb } = values;
+  return [marcha, ie_ins, ie_ex, halt, embolado, volume_emb];
 }
