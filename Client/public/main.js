@@ -425,8 +425,9 @@ function initWrite(portWrite, parserWrite) {
   };
 
   parserWrite.on("data", (line) => {
-    const data = line.slice(0, -1).split(",");
-    if (data[0] === "<") {
+    if (line.startsWith("<")) {
+      const data = line.slice(0, 1).slice(0, -1).split(",");
+      console.log("---------> Write", line);
       const [marcha, ie_ins, ie_ex, halt, embolado, volume_emb] = data;
       updateValues({
         marcha,
