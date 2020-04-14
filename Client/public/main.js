@@ -157,7 +157,11 @@ let values = {
 let inputs = {};
 let inputsShow = {};
 
-let t0, ins_v0, ins_acc, ex_v0, ex_acc;
+let t0 = 0,
+  ins_v0 = 0,
+  ins_acc = 0,
+  ex_v0 = 0,
+  ex_acc = 0;
 
 window.onload = () => {
   getPortsList((ports) => {
