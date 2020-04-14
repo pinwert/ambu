@@ -277,10 +277,10 @@ function initRead(portRead, parserRead) {
     if (t0) {
       ins_acc += ((ins_v0 + msg.flow_ins) / 2) * (msg.time - t0);
       ex_acc += ((ex_v0 + msg.flow_ex) / 2) * (msg.time - t0);
-      ins_v0 = msg.flow_ins;
-      ex_v0 = msg.flow_ex;
-      t0 = msg.time;
     }
+    ins_v0 = msg.flow_ins;
+    ex_v0 = msg.flow_ex;
+    t0 = msg.time;
   };
 
   // ***** ----------- ***** //
