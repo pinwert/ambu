@@ -298,7 +298,6 @@ function initRead(portRead, parserRead) {
         frequency,
         fi_o2,
       });
-      console.log("---------> Read", line);
       if (process.env.WRITE_CSV !== "false") writer.write(data);
     }
   });
@@ -404,7 +403,6 @@ function initWrite(portWrite, parserWrite) {
   parserWrite.on("data", (line) => {
     if (line.startsWith("<")) {
       const data = line.slice(1, -2).split(",");
-      console.log("---------> Write", line);
       const [marcha, ie, parada_ins, emb, v_emb] = data;
       updateValues({
         marcha,
