@@ -140,14 +140,9 @@ let values = {
   marcha: 1,
   ie_ins: 1,
   ie_ex: 1,
-  halt: 0.2,
+  parada_ins: 0.2,
   emb: 15,
-  volume_emb: 50,
-  volume_min: 0,
-  volume_max: 0,
-  pressure_min: 0,
-  pressure_max: 0,
-  FI_O2: 0,
+  v_emb: 50,
 };
 
 let inputs = {};
