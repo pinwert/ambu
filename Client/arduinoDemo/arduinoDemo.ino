@@ -42,9 +42,9 @@ void sendSignal(float pressure, float flow_ins, float flow_ex, float time, float
   Serial.print(",");
   Serial.print(flow_ins);
   Serial.print(",");
-  Serial.print(flow_ex);
-  Serial.print(",");
   Serial.print(flow_ins);
+  Serial.print(",");
+  Serial.print(flow_ex);
   Serial.print(",");
   Serial.print(flow_ex);
   Serial.print(",");
