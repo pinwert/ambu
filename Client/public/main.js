@@ -174,7 +174,7 @@ window.onload = () => {
     // });
 
     // selectPortRead.onchange = (e) => {
-    portRead = new SerialPort("/dev/tty/USB0", { baudRate });
+    portRead = new SerialPort("/dev/ttyUSB0", { baudRate });
     parserRead = new Readline();
     portRead.pipe(parserRead);
     // if (portWrite && parserWrite) {
@@ -190,7 +190,7 @@ window.onload = () => {
     // });
 
     // selectPortWrite.onchange = (e) => {
-    portWrite = new SerialPort("/dev/tty/ACM0", { baudRate });
+    portWrite = new SerialPort("/dev/ttyACM0", { baudRate });
     parserWrite = new Readline();
     portWrite.pipe(parserWrite);
 
