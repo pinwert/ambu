@@ -261,11 +261,6 @@ function initRead(portRead, parserRead) {
     if (i % 3 === 0) {
       flow.setData(newDataFlow);
       pressure.setData(newDataPressure);
-      const index = i > 0 ? i - 1 : numberOfPoints - 1;
-      const newPressure = Number(newDataPressure[1][index]);
-      peep = peep === undefined || peep > newPressure ? newPressure : peep;
-      p_max =
-        peep === undefined || peep < newPressure ? Number(newPressure) : peep;
       inputsShow.ie.innerHTML = Number(msg.ie).toFixed(0);
       inputsShow.fi_o2.innerHTML = Number(msg.fi_o2).toFixed(0);
     }
@@ -273,8 +268,12 @@ function initRead(portRead, parserRead) {
       ins_acc +=
         ((ins_v0 + Number(msg.flow_ins)) / 2) * (Number(msg.time) - t0);
       ex_acc += ((ex_v0 + Number(msg.flow_ex)) / 2) * (Number(msg.time) - t0);
-      peep = msg.p;
     }
+    const index = i > 0 ? i - 1 : numberOfPoints - 1;
+    const newPressure = Number(newDataPressure[1][index]);
+    peep = peep === undefined || peep > newPressure ? newPressure : peep;
+    p_max =
+      p_max === undefined || p_max < newPressure ? Number(newPressure) : peep;
     ins_v0 = Number(msg.flow_ins);
     ex_v0 = Number(msg.flow_ex);
     t0 = Number(msg.time);
