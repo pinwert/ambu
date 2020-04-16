@@ -70,7 +70,7 @@ const optsFlow = {
   ],
   axes: [
     {
-      times,
+      // times,
     },
     {
       space: 10,
@@ -96,7 +96,7 @@ const optsPressure = {
   },
   series: [
     {
-      times,
+      // times,
     },
     {
       scale: 0.01,
@@ -357,18 +357,9 @@ function initWrite(portWrite, parserWrite) {
   };
 
   Object.keys(inputs).forEach((key) => {
-    inputs[key].onchange = (e) => {
+    inputs[key].onclick = (e) => {
       dataToSend.field = e.currentTarget.id;
-      dataToSend.value = e.currentTarget.value;
-      keyboard.field_name.innerHTML = dataToSend.field;
-      keyboard.num_box.value = dataToSend.value;
-
-      values[key] = e.currentTarget.value;
-      portWrite.write(`<${valuesToSend()}>\n`);
-    };
-    inputs[key].onfocus = (e) => {
-      dataToSend.field = e.currentTarget.id;
-      dataToSend.value = e.currentTarget.value;
+      dataToSend.value = e.currentTarget.innerHTML;
       keyboard.field_name.innerHTML = dataToSend.field;
       keyboard.num_box.value = dataToSend.value;
       if (keyboard.keypad.style.display == "none") {
@@ -439,6 +430,7 @@ function initWrite(portWrite, parserWrite) {
 
 function updateValues(msg) {
   Object.keys(values).forEach((k) => {
+    console.log("-----------> W", k, values[k], msg[k]);
     values[k] = msg[k];
     if (inputs[k]) inputs[k].value = msg[k];
   });
