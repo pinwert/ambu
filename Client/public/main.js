@@ -32,7 +32,7 @@ const dataAccepted = [
   "marcha",
   "ie_ins",
   "ie_ex",
-  "embolado",
+  "emb",
   "volume_emb",
   "halt",
   "volume_min",
@@ -143,7 +143,7 @@ let values = {
   ie_ins: 1,
   ie_ex: 1,
   halt: 0.2,
-  embolado: 15,
+  emb: 15,
   volume_emb: 50,
   volume_min: 0,
   volume_max: 0,
@@ -270,8 +270,8 @@ function initRead(portRead, parserRead) {
         peep === undefined || peep < newDataPressure[1][index]
           ? newDataPressure[1][index]
           : peep;
-      inputsShow.ie.innerHTML = msg.ie;
-      inputsShow.fi_o2.innerHTML = msg.fi_o2;
+      inputsShow.ie.innerHTML = Number(msg.ie).toFixed(0);
+      inputsShow.fi_o2.innerHTML = Number(msg.fi_o2).toFixed(0);
     }
     if (t0) {
       ins_acc +=
@@ -427,18 +427,18 @@ function initWrite(portWrite, parserWrite) {
     if (line.startsWith("<")) {
       const data = line.slice(1, -2).split(",");
       console.log("---------> Write", line);
-      const [marcha, ie, halt, emb, v_emb] = data;
+      const [marcha, ie, parada_ins, emb, v_emb] = data;
       updateValues({
         marcha,
         ie,
-        halt,
+        parada_ins,
         emb,
         v_emb,
       });
-      inputsShow.v_ins.innerHTML = ins_acc.toFixed(2);
-      inputsShow.v_esp.innerHTML = ex_acc.toFixed(2);
-      inputsShow.peep.innerHTML = peep.toFixed(2);
-      inputsShow.p_max.innerHTML = p_max.toFixed(2);
+      inputsShow.v_ins.innerHTML = ins_acc.toFixed(0);
+      inputsShow.v_esp.innerHTML = ex_acc.toFixed(0);
+      if (peep !== undefined) inputsShow.peep.innerHTML = peep.toFixed(1);
+      if (p_max !== undefined) inputsShow.p_max.innerHTML = p_max.toFixed(1);
       ins_acc = 0;
       ex_acc = 0;
       peep = undefined;
