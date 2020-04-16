@@ -429,7 +429,7 @@ function initWrite(portWrite, parserWrite) {
 }
 
 function updateValues(msg) {
-  Object.keys(values).forEach((k) => {
+  Object.keys(msg).forEach((k) => {
     console.log("-----------> W", k, values[k], msg[k]);
     values[k] = msg[k];
     if (inputs[k]) inputs[k].value = msg[k];
