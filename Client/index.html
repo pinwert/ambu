@@ -13,7 +13,7 @@
       <div id="flowChart" class="chart"></div>
       <div id="pressureChart" class="chart"></div>
     </div>
-    <div class="setup" id="setup_panel">
+    <!-- <div class="setup" id="setup_panel">
       <div class="row">
         <label class="label">Serial ports Read:</label>
         <select id="serial_ports1"></select>
@@ -22,7 +22,7 @@
         <label class="label">Serial ports Write:</label>
         <select id="serial_ports2"></select>
       </div>
-    </div>
+    </div> -->
 
     <div class="info" id="info_panel">
       <div class="row">
@@ -88,6 +88,29 @@
             <span class="subtitle fi_o2">%</span>
           </div>
         </div>
+      </div>
+      <div class="row">
+        <span class="alarma_titulo">Alarmas</span>
+        <table class="alarma">
+          <tr>
+            <td class="title alarma"></td>
+            <td class="title alarma">FiO2</td>
+            <td class="title alarma">Volumen</td>
+            <td class="title alarma">presión</td>
+          </tr>
+          <tr>
+            <td class="title alarma">Min</td>
+            <td class="value alarma" id="fi_o2_min">0</td>
+            <td class="value alarma" id="v_min">0</td>
+            <td class="value alarma" id="p_min">0</td>
+          </tr>
+          <tr>
+            <td class="title alarma">Max</td>
+            <td class="value alarma" id="fi_o2_max">0</td>
+            <td class="value alarma" id="v_max">0</td>
+            <td class="value alarma" id="p_max">0</td>
+          </tr>
+        </table>
       </div>
       <div class="row">
         <button id="start" data-key="marcha" data-value="1">START</button>

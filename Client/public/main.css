@@ -4,6 +4,7 @@ body {
   background-color: white;
   max-width: 100vw;
   max-height: 100vh;
+  font-family: sans-serif;
 }
 
 .charts {
@@ -36,13 +37,14 @@ body {
   width: 100%;
   align-items: center;
   padding: 5px 0;
+  position: relative;
 }
 
 .column {
   flex-direction: column;
   display: flex;
   justify-content: space-between;
-  width: 50%;
+  flex: 1;
   align-items: center;
   padding: 5px 0;
 }
@@ -146,7 +148,8 @@ button {
 .value {
   font-size: 38px;
   display: flex;
-  flex: 1;
+  min-width: 50px;
+  padding: 0 10px;
   justify-content: flex-end;
   align-items: center;
   font-weight: bold;
@@ -163,6 +166,34 @@ button {
   font-size: 16px;
   width: 100%;
   padding-left: 10px;
+}
+.alarma_titulo {
+  position: absolute;
+  top: 6px;
+  left: -20px;
+  background-color: white;
+  padding: 10px 15px;
+  font-size: 20px;
+}
+.alarma {
+  width: auto;
+  background-color: white;
+  color: black;
+  box-shadow: none;
+}
+
+table.alarma {
+  /* border: 1px solid black; */
+  border-radius: 20px;
+  padding: 10px;
+  width: 100%;
+  font-size: 28px;
+  margin: 20px 0;
+  box-shadow: 2px 1px 4px gray;
+}
+
+.value.alarma {
+  display: table-cell;
 }
 
 .peep,

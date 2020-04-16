@@ -190,7 +190,7 @@ window.onload = () => {
     portWrite.pipe(parserWrite);
 
     // if (portRead && parserRead) {
-    setup_panel.style.display = "none";
+    // setup_panel.style.display = "none";
     info_panel.style.display = "flex";
     // }
 
