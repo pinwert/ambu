@@ -20,7 +20,6 @@ const writer = csvWriter({
   sendHeaders: true,
 });
 const numberOfPoints = 150;
-const sampling = 100;
 const dataFlow = [[], [], []];
 const dataPressure = [[], []];
 const times = [];
@@ -50,7 +49,7 @@ for (var j = 0; j <= numberOfPoints; j++) {
 }
 
 const optsFlow = {
-  width: window.innerWidth * 0.7 - 40,
+  width: window.innerWidth * 0.66 - 40,
   height: window.innerHeight * 0.5 - 60,
   scales: {
     x: {
@@ -77,7 +76,7 @@ const optsFlow = {
     {
       space: 10,
       show: true,
-      label: "Flow ins, Flow ex",
+      label: "Volumen",
       labelSize: 30,
       labelFont: "bold 12px Arial",
       font: "8px Arial",
@@ -89,7 +88,7 @@ const optsFlow = {
 };
 
 const optsPressure = {
-  width: window.innerWidth * 0.7 - 40,
+  width: window.innerWidth * 0.66 - 40,
   height: window.innerHeight * 0.5 - 60,
   scales: {
     x: {
@@ -115,7 +114,7 @@ const optsPressure = {
     {
       space: 10,
       show: true,
-      label: "Pressure",
+      label: "Presión",
       labelSize: 30,
       labelFont: "bold 12px Arial",
       font: "8px Arial",
@@ -161,7 +160,9 @@ let t0 = 0,
   ins_v0 = 0,
   ins_acc = 0,
   ex_v0 = 0,
-  ex_acc = 0;
+  ex_acc = 0,
+  peep,
+  p_max;
 
 window.onload = () => {
   getPortsList((ports) => {
@@ -214,13 +215,14 @@ function initRead(portRead, parserRead) {
   // ***** info inputs ***** //
 
   inputsShow = {
-    pressure: document.getElementById("pressure"),
-    flow_ins: document.getElementById("flow_ins"),
-    flow_ex: document.getElementById("flow_ex"),
-    time: document.getElementById("time"),
-    volume_cicle_ins: document.getElementById("volume_ins"),
-    volume_cicle_ex: document.getElementById("volume_ex"),
-    value_o2: document.getElementById("value_o2"),
+    peep: document.getElementById("peep"),
+    p_max: document.getElementById("p_max"),
+    volume_cicle_ins: document.getElementById("v_ins"),
+    volume_cicle_ex: document.getElementById("v_esp"),
+    ie: document.getElementById("ie"),
+    emb: document.getElementById("emb"),
+    parada_ins: document.getElementById("parada_ins"),
+    fi_o2: document.getElementById("fi_o2"),
   };
 
   // ***** ----------- ***** //
@@ -257,27 +259,26 @@ function initRead(portRead, parserRead) {
       i = 0;
     }
 
-    if (i % 10 === 0) {
-      const s = msg.time / 1000;
-      const min = Math.floor((s / 60) << 0);
-      const sec = Math.floor(s % 60);
-      inputsShow.time.value = min + ":" + sec;
-    }
-
     if (i % 3 === 0) {
       flow.setData(newDataFlow);
       pressure.setData(newDataPressure);
       const index = i > 0 ? i - 1 : numberOfPoints - 1;
-      inputsShow.pressure.value = newDataPressure[1][index];
-      inputsShow.flow_ins.value = newDataFlow[1][index];
-      inputsShow.flow_ex.value = newDataFlow[2][index];
-      inputsShow.flow_ex.value = newDataFlow[2][index];
-      inputsShow.value_o2.value = msg.value_o2;
+      peep =
+        peep === undefined || peep > newDataPressure[1][index]
+          ? newDataPressure[1][index]
+          : peep;
+      p_max =
+        peep === undefined || peep < newDataPressure[1][index]
+          ? newDataPressure[1][index]
+          : peep;
+      inputsShow.ie.innerHTML = msg.ie;
+      inputsShow.fi_o2.innerHTML = msg.value_o2;
     }
     if (t0) {
       ins_acc +=
         ((ins_v0 + Number(msg.flow_ins)) / 2) * (Number(msg.time) - t0);
       ex_acc += ((ex_v0 + Number(msg.flow_ex)) / 2) * (Number(msg.time) - t0);
+      peep = msg.p;
     }
     ins_v0 = Number(msg.flow_ins);
     ex_v0 = Number(msg.flow_ex);
@@ -298,7 +299,7 @@ function initRead(portRead, parserRead) {
         time,
         ie,
         frequency,
-        value_o2,
+        fi_o2,
       ] = data;
       receiveData({
         pressure,
@@ -309,7 +310,7 @@ function initRead(portRead, parserRead) {
         time,
         ie,
         frequency,
-        value_o2,
+        fi_o2,
       });
       console.log("---------> Read", line);
       if (process.env.WRITE_CSV !== "false") writer.write(data);

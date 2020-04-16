@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>RADU</title>
     <link rel="stylesheet" href="./public/main.css" />
     <link rel="stylesheet" href="./public/uplot.css" />
@@ -25,63 +26,84 @@
 
     <div class="info" id="info_panel">
       <div class="row">
-        <label class="pressure">Pressure</label>
-        <input id="pressure" disabled="true" />
+        <div class="column">
+          <div class="row">
+            <span class="value peep" id="peep"></span>
+            <div class="column">
+              <span class="title peep">PEEP</span
+              ><span class="subtitle peep">mmH2O</span>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="row">
+            <span class="value p_max" id="p_max"></span>
+            <div class="column">
+              <span class="title p_max">Pmax</span
+              ><span class="subtitle p_max">mmH2O</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="row">
-        <label class="flow_ins">Flow ins</label>
-        <input id="flow_ins" disabled="true" />
+        <div class="column">
+          <div class="row">
+            <span class="value v_ins" id="v_ins"></span>
+            <div class="column">
+              <span class="title v_ins">V ins</span
+              ><span class="subtitle v_ins">ml</span>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="row">
+            <span class="value v_esp" id="v_esp"></span>
+            <div class="column">
+              <span class="title v_esp">V esp</span
+              ><span class="subtitle v_esp">ml</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="row">
-        <label class="flow_ex">Flow ex</label>
-        <input id="flow_ex" disabled="true" />
+        <div class="column">
+          <div class="row">
+            <span class="value ie" id="ie"></span>
+            <div class="column">
+              <span class="title ie">IE</span>
+              <span class="subtitle ie">%</span>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="row">
+            <span class="value emb" id="emb"></span>
+            <div class="column">
+              <span class="title emb">Emb</span>
+              <span class="subtitle emb">l/min</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="row">
-        <label>Time</label>
-        <input id="time" disabled="true" />
-      </div>
-      <div class="row">
-        <label class="label">Volume ins</label>
-        <input id="volume_ins" disabled="true" />
-      </div>
-      <div class="row">
-        <label class="label">Volume ex</label>
-        <input id="volume_ex" disabled="true" />
-      </div>
-      <div class="row">
-        <label class="label">O2</label>
-        <input id="value_o2" disabled="true" />
-      </div>
-      <div class="row">
-        <label for="volume_min">I / E</label>
-        <input class="double" id="ie_ins" type="number" step="0.01" /> /
-        <input class="double" id="ie_ex" type="number" step="0.01" />
-      </div>
-      <div class="row">
-        <label class="label">Embolado</label>
-        <input id="embolado" type="number" step="0.01" />
-      </div>
-      <div class="row">
-        <label class="label">Volume Emb</label>
-        <input id="volume_emb" type="number" step="0.01" />
-      </div>
-      <div class="row">
-        <label class="label">Halt</label>
-        <input id="halt" type="number" step="0.01" />
-      </div>
-      <div class="row">
-        <label class="label">O2</label>
-        <input id="FI_O2" type="number" step="0.01" />
-      </div>
-      <div class="row">
-        <label for="volume_min">Alarm V</label>
-        <input class="double" id="volume_min" type="number" step="0.01" />
-        <input class="double" id="volume_max" type="number" step="0.01" />
-      </div>
-      <div class="row">
-        <label for="pressure_min">Alarm P</label>
-        <input class="double" id="pressure_min" type="number" step="0.01" />
-        <input class="double" id="pressure_max" type="number" step="0.01" />
+        <div class="column">
+          <div class="row">
+            <span class="value parada_ins" id="parada_ins"></span>
+            <div class="column">
+              <span class="title parada_ins">Parada ins</span>
+              <span class="subtitle parada_ins">seg</span>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="row">
+            <span class="value fi_o2" id="fi_o2"></span>
+            <div class="column">
+              <span class="title fi_o2">FiO2</span>
+              <span class="subtitle fi_o2">%</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="row">
         <button id="start" data-key="marcha" data-value="1">START</button>
