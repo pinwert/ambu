@@ -144,21 +144,23 @@ button {
 }
 
 .value {
-  font-size: 32px;
+  font-size: 54px;
   display: flex;
   flex: 1;
   justify-content: flex-end;
   align-items: center;
+  font-weight: bold;
 }
 
 .title {
-  font-size: 16px;
+  font-size: 28px;
   width: 100%;
   padding-left: 10px;
+  font-weight: bold;
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: 28px;
   width: 100%;
   padding-left: 10px;
 }
