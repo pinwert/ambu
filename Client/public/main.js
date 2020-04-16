@@ -266,7 +266,7 @@ function initRead(portRead, parserRead) {
     const newPressure = Number(newDataPressure[1][index]);
     peep = peep === undefined || peep > newPressure ? newPressure : peep;
     p_max =
-      p_max === undefined || p_max < newPressure ? Number(newPressure) : peep;
+      p_max === undefined || p_max < newPressure ? Number(newPressure) : p_max;
     ins_v0 = Number(msg.flow_ins);
     ex_v0 = Number(msg.flow_ex);
     t0 = Number(msg.time);
