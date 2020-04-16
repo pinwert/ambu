@@ -142,7 +142,7 @@ let values = {
   ie_esp: 1,
   parada_ins: 0.2,
   emb: 15,
-  v_emb: 50,
+  v_emb: 420,
 };
 
 let inputs = {};
@@ -437,5 +437,5 @@ function updateValues(msg) {
 
 function valuesToSend() {
   const { marcha, ie_ins, ie_esp, parada_ins, emb, v_emb } = values;
-  return [marcha, ie_ins, ie_esp, parada_ins, emb, v_emb, -14];
+  return [marcha, ie_ins, ie_esp, parada_ins, emb, v_emb];
 }
