@@ -254,7 +254,6 @@ function initRead(portRead, parserRead) {
     if (i % 3 === 0) {
       flow.setData(newDataFlow);
       pressure.setData(newDataPressure);
-      inputsShow.ie.innerHTML = Number(msg.ie).toFixed(0);
       inputsShow.fi_o2.innerHTML = Number(msg.fi_o2).toFixed(0);
     }
     if (t0) {
@@ -432,7 +431,9 @@ function updateValues(msg) {
   Object.keys(msg).forEach((k) => {
     console.log("-----------> W", k, inputs[k], values[k], msg[k]);
     values[k] = msg[k];
-    if (inputs[k]) inputs[k].innerHTML = msg[k];
+    inputs.ie.innerHTML = (Number(msg.ie) * 100).toFixed(0);
+    inputs.parada_ins.innerHTML = Number(msg.parada_ins).toFixed(1);
+    inputs.emb.innerHTML = Number(msg.emb).toFixed(0);
   });
 }
 
