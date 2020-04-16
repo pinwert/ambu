@@ -139,7 +139,7 @@ let portRead, portWrite, parserRead, parserWrite;
 let values = {
   marcha: 1,
   ie_ins: 1,
-  ie_ex: 1,
+  ie_esp: 1,
   parada_ins: 0.2,
   emb: 15,
   v_emb: 50,
