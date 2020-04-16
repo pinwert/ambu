@@ -124,8 +124,6 @@ const optsPressure = {
   ],
 };
 
-// const portS = new SerialPort(process.env.SERIAL_PORT, { baudRate });
-
 const getPortsList = (callback) => {
   var portsList = [];
 
@@ -166,43 +164,43 @@ let t0 = 0,
 window.onload = () => {
   getPortsList((ports) => {
     const setup_panel = document.getElementById("setup_panel");
-    const selectPortRead = document.getElementById("serial_ports1");
-    const selectPortWrite = document.getElementById("serial_ports2");
+    // const selectPortRead = document.getElementById("serial_ports1");
+    // const selectPortWrite = document.getElementById("serial_ports2");
     const info_panel = document.getElementById("info_panel");
 
-    selectPortRead.innerHTML += ` <option value=""></option>`;
-    ports.forEach((p) => {
-      selectPortRead.innerHTML += ` <option value="${p}">${p}</option>`;
-    });
+    // selectPortRead.innerHTML += ` <option value=""></option>`;
+    // ports.forEach((p) => {
+    //   selectPortRead.innerHTML += ` <option value="${p}">${p}</option>`;
+    // });
 
-    selectPortRead.onchange = (e) => {
-      portRead = new SerialPort(e.currentTarget.value, { baudRate });
-      parserRead = new Readline();
-      portRead.pipe(parserRead);
-      if (portWrite && parserWrite) {
-        setup_panel.style.display = "none";
-        info_panel.style.display = "flex";
-      }
-      initRead(portRead, parserRead);
-    };
+    // selectPortRead.onchange = (e) => {
+    portRead = new SerialPort("/dev/tty/USB0", { baudRate });
+    parserRead = new Readline();
+    portRead.pipe(parserRead);
+    // if (portWrite && parserWrite) {
+    //   setup_panel.style.display = "none";
+    //   info_panel.style.display = "flex";
+    // }
+    initRead(portRead, parserRead);
+    // };
 
-    selectPortWrite.innerHTML += ` <option value=""></option>`;
-    ports.forEach((p) => {
-      selectPortWrite.innerHTML += ` <option value="${p}">${p}</option>`;
-    });
+    // selectPortWrite.innerHTML += ` <option value=""></option>`;
+    // ports.forEach((p) => {
+    //   selectPortWrite.innerHTML += ` <option value="${p}">${p}</option>`;
+    // });
 
-    selectPortWrite.onchange = (e) => {
-      portWrite = new SerialPort(e.currentTarget.value, { baudRate });
-      parserWrite = new Readline();
-      portWrite.pipe(parserWrite);
+    // selectPortWrite.onchange = (e) => {
+    portWrite = new SerialPort("/dev/tty/ACM0", { baudRate });
+    parserWrite = new Readline();
+    portWrite.pipe(parserWrite);
 
-      if (portRead && parserRead) {
-        setup_panel.style.display = "none";
-        info_panel.style.display = "flex";
-      }
+    // if (portRead && parserRead) {
+    setup_panel.style.display = "none";
+    info_panel.style.display = "flex";
+    // }
 
-      initWrite(portWrite, parserWrite);
-    };
+    initWrite(portWrite, parserWrite);
+    // };
   });
 };
 
