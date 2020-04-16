@@ -15,7 +15,7 @@ const writer = csvWriter({
     "time",
     "ie",
     "frequency",
-    "value_o2",
+    "fi_o2",
   ],
   sendHeaders: true,
 });
@@ -39,7 +39,6 @@ const dataAccepted = [
   "volume_max",
   "pressure_min",
   "pressure_max",
-  "FI_O2",
 ];
 
 for (var j = 0; j <= numberOfPoints; j++) {
@@ -217,8 +216,8 @@ function initRead(portRead, parserRead) {
   inputsShow = {
     peep: document.getElementById("peep"),
     p_max: document.getElementById("p_max"),
-    volume_cicle_ins: document.getElementById("v_ins"),
-    volume_cicle_ex: document.getElementById("v_esp"),
+    v_ins: document.getElementById("v_ins"),
+    v_esp: document.getElementById("v_esp"),
     ie: document.getElementById("ie"),
     emb: document.getElementById("emb"),
     parada_ins: document.getElementById("parada_ins"),
@@ -272,7 +271,7 @@ function initRead(portRead, parserRead) {
           ? newDataPressure[1][index]
           : peep;
       inputsShow.ie.innerHTML = msg.ie;
-      inputsShow.fi_o2.innerHTML = msg.value_o2;
+      inputsShow.fi_o2.innerHTML = msg.fi_o2;
     }
     if (t0) {
       ins_acc +=
@@ -322,16 +321,10 @@ function initWrite(portWrite, parserWrite) {
   // ***** info inputs ***** //
 
   inputs = {
-    ie_ins: document.getElementById("ie_ins"),
-    ie_ex: document.getElementById("ie_ex"),
-    embolado: document.getElementById("embolado"),
-    volume_emb: document.getElementById("volume_emb"),
-    halt: document.getElementById("halt"),
-    volume_min: document.getElementById("volume_min"),
-    volume_max: document.getElementById("volume_max"),
-    pressure_min: document.getElementById("pressure_min"),
-    pressure_max: document.getElementById("pressure_max"),
-    FI_O2: document.getElementById("FI_O2"),
+    ie: document.getElementById("ie"),
+    emb: document.getElementById("emb"),
+    parada_ins: document.getElementById("parada_ins"),
+    fi_o2: document.getElementById("fi_o2"),
   };
 
   const buttons = {
@@ -343,7 +336,7 @@ function initWrite(portWrite, parserWrite) {
 
   // ***** default values ***** //
   Object.keys(values).forEach((k) => {
-    if (inputs[k]) inputs[k].value = values[k];
+    if (inputs[k]) inputs[k].innerHTML = values[k];
   });
   // ***** ----------- ***** //
   // ***** keyboard ***** //
@@ -434,19 +427,22 @@ function initWrite(portWrite, parserWrite) {
     if (line.startsWith("<")) {
       const data = line.slice(1, -2).split(",");
       console.log("---------> Write", line);
-      const [marcha, ie_ins, ie_ex, halt, embolado, volume_emb] = data;
+      const [marcha, ie, halt, emb, v_emb] = data;
       updateValues({
         marcha,
-        ie_ins,
-        ie_ex,
+        ie,
         halt,
-        embolado,
-        volume_emb,
+        emb,
+        v_emb,
       });
-      inputsShow.volume_cicle_ins.value = ins_acc.toFixed(2);
-      inputsShow.volume_cicle_ex.value = ex_acc.toFixed(2);
+      inputsShow.v_ins.innerHTML = ins_acc.toFixed(2);
+      inputsShow.v_esp.innerHTML = ex_acc.toFixed(2);
+      inputsShow.peep.innerHTML = peep.toFixed(2);
+      inputsShow.p_max.innerHTML = p_max.toFixed(2);
       ins_acc = 0;
       ex_acc = 0;
+      peep = undefined;
+      p_max = undefined;
       console.log("---------> Write", line);
     }
   });
@@ -461,6 +457,6 @@ function updateValues(msg) {
 }
 
 function valuesToSend() {
-  const { marcha, ie_ins, ie_ex, halt, embolado, volume_emb } = values;
-  return [marcha, ie_ins, ie_ex, halt, embolado, volume_emb];
+  const { marcha, ie_ins, ie_esp, parada_ins, emb, v_emb } = values;
+  return [marcha, ie_ins, ie_esp, parada_ins, emb, v_emb];
 }

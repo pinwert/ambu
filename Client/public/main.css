@@ -42,7 +42,7 @@ body {
   flex-direction: column;
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  width: 50%;
   align-items: center;
   padding: 5px 0;
 }
@@ -151,4 +151,22 @@ button {
   padding: 5px;
   border-radius: 6px;
   box-shadow: 2px 2px 1px gray;
+}
+
+.value {
+  font-size: 26px;
+  text-align: right;
+}
+
+.peep,
+.p_max {
+  color: rgba(68, 114, 196);
+}
+
+.v_ins {
+  color: rgba(237, 125, 49);
+}
+
+.v_esp {
+  color: rgba(112, 143, 71);
 }
