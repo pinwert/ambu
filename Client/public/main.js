@@ -68,12 +68,12 @@ const optsFlow = {
     {
       label: "Flow ins",
       stroke: "red",
-      fill: "rgba(237, 125, 49)",
+      fill: "rgba(237, 125, 49,0.3)",
     },
     {
       label: "Flow ex",
       stroke: "green",
-      fill: "rgba(112, 143, 71)",
+      fill: "rgba(112, 143, 71,0.3)",
     },
   ],
   axes: [
@@ -111,7 +111,7 @@ const optsPressure = {
       side: 0.01,
       label: "pressure",
       stroke: "blue",
-      fill: "rgba(68, 114, 196)",
+      fill: "rgba(68, 114, 196,0.3)",
     },
   ],
   axes: [
