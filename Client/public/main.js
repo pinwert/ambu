@@ -256,7 +256,7 @@ function initRead(portAlberto, parserRead) {
       i = 0;
     }
 
-    if (i % 3 === 0) {
+    if (i % 15 === 0) {
       flow.setData(newDataFlow);
       pressure.setData(newDataPressure);
       inputsShow.fi_o2.innerHTML = Number(msg.fi_o2).toFixed(0);
