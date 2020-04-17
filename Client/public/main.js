@@ -358,6 +358,7 @@ function initWrite(portFer, parserWrite) {
     if (e.target === keyboard.keypad) {
       keyboard.keypad.style.display = "none";
       keyboard.bis.style.display = "none";
+      dataToSend.field_bis = "";
     }
   };
 
@@ -368,6 +369,7 @@ function initWrite(portFer, parserWrite) {
   if (!dataToSend.field) {
     keyboard.keypad.style.display = "none";
     keyboard.bis.style.display = "none";
+    dataToSend.field_bis = "";
   }
 
   keyboard.value.onchange = (e) => {
@@ -381,7 +383,6 @@ function initWrite(portFer, parserWrite) {
     dataToSend.active = "value";
   };
   keyboard.value_bis.onfocus = (e) => {
-    console.log("--------------");
     dataToSend.active = "value_bis";
   };
 
@@ -390,7 +391,7 @@ function initWrite(portFer, parserWrite) {
       switch (e.currentTarget.id) {
         case "ie":
           dataToSend.field = "ie_ins";
-          dataToSend.field_bis = "ie_exp";
+          dataToSend.field_bis = "ie_esp";
           keyboard.bis.style.display = "flex";
           break;
         case "v_ins":
@@ -403,9 +404,9 @@ function initWrite(portFer, parserWrite) {
       dataToSend.value = "";
       dataToSend.value_bis = "";
       keyboard.field_name.innerHTML = dataToSend.field;
-      keyboard[dataToSend.active].value = dataToSend.value;
+      keyboard.value.value = dataToSend.value;
       keyboard.field_name_bis.innerHTML = dataToSend.field_bis;
-      keyboard[dataToSend.active].value = dataToSend.value_bis;
+      keyboard.value_bis.value = dataToSend.value_bis;
       if (keyboard.keypad.style.display == "none") {
         keyboard.keypad.style.display = "flex";
       }
@@ -428,8 +429,6 @@ function initWrite(portFer, parserWrite) {
 
   keyboard.keys.forEach((k) => {
     k.onclick = (e) => {
-      console.log("--------------");
-
       dataToSend[dataToSend.active] += e.currentTarget.innerHTML;
       keyboard[dataToSend.active].value = dataToSend[dataToSend.active];
     };
@@ -446,7 +445,7 @@ function initWrite(portFer, parserWrite) {
       if (dataToSend.field_bis) {
         values[dataToSend.field_bis] = dataToSend.value_bis;
       }
-      console.log("-----------> W Fer", valuesToSend());
+      console.log("-----------> W Fer", valuesToSend(), dataToSend);
       portFer.write(`<${valuesToSend()}>\n`);
     } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
       console.log("-----------> W Alberto", dataToSend.field, dataToSend.value);
@@ -454,6 +453,7 @@ function initWrite(portFer, parserWrite) {
     }
     keyboard.keypad.style.display = "none";
     keyboard.bis.style.display = "none";
+    dataToSend.field_bis = "";
   };
 
   parserWrite.on("data", (line) => {
