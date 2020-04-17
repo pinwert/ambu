@@ -405,10 +405,12 @@ function initWrite(portFer, parserWrite) {
   keyboard.send.onclick = (e) => {
     if (dataAcceptedFer.includes(dataToSend.field)) {
       values[dataToSend.field] = dataToSend.value;
+      console.log("-----------> W Fer", valuesToSend());
       portFer.write(`<${valuesToSend()}>\n`);
       keyboard.keypad.style.display = "none";
     } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
       values[dataToSend.field] = dataToSend.value;
+      console.log("-----------> W Alberto", dataToSend.field, dataToSend.value);
       portAlberto.write(`${dataToSend.field},${dataToSend.value}\n`);
       keyboard.keypad.style.display = "none";
     }
