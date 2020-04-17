@@ -101,7 +101,6 @@ td {
   width: 33%;
   color: white;
   background-color: rgba(25, 25, 25, 0.9);
-  cursor: pointer;
   text-align: center;
   height: 40px;
   border-radius: 6px;
@@ -113,6 +112,10 @@ td.btn {
   width: 33%;
   cursor: pointer;
   text-align: center;
+}
+
+td.key {
+  cursor: pointer;
 }
 
 table {
@@ -153,6 +156,7 @@ button {
   justify-content: flex-end;
   align-items: center;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .title {
@@ -183,7 +187,6 @@ button {
 }
 
 table.alarma {
-  /* border: 1px solid black; */
   border-radius: 20px;
   padding: 10px;
   width: 100%;
@@ -199,12 +202,19 @@ table.alarma {
 .peep,
 .p_max {
   color: rgba(68, 114, 196);
+  cursor: auto;
 }
 
 .v_ins {
   color: rgba(237, 125, 49);
+  cursor: auto;
 }
 
 .v_esp {
   color: rgba(112, 143, 71);
+  cursor: auto;
+}
+
+.fi_o2 {
+  cursor: auto;
 }

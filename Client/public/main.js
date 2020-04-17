@@ -22,29 +22,34 @@ const writer = csvWriter({
 const numberOfPoints = 150;
 const dataFlow = [[], [], []];
 const dataPressure = [[], []];
-const times = [];
+// const times = [];
 const dataToSend = {
   field: "",
   value: "",
 };
 
-const dataAccepted = [
+const dataAcceptedFer = [
   "marcha",
   "ie_ins",
-  "ie_ex",
+  "ie_esp",
+  "parada_ins",
   "emb",
-  "volume_emb",
-  "halt",
-  "volume_min",
-  "volume_max",
-  "pressure_min",
-  "pressure_max",
+  "v_emb",
+];
+
+const dataAcceptedAlberto = [
+  "fi_o2_a_min",
+  "fi_o2_a_max",
+  "v_a_min",
+  "v_a_max",
+  "p_a_min",
+  "p_a_max",
 ];
 
 for (var j = 0; j <= numberOfPoints; j++) {
   dataFlow[0][j] = j;
   dataPressure[0][j] = j;
-  times[j] = 0;
+  // times[j] = 0;
 }
 
 const optsFlow = {
@@ -108,7 +113,7 @@ const optsPressure = {
   ],
   axes: [
     {
-      times,
+      // times,
     },
     {
       space: 10,
@@ -135,7 +140,7 @@ const getPortsList = (callback) => {
   });
 };
 
-let portRead, portWrite, parserRead, parserWrite;
+let portAlberto, portFer, parserRead, parserWrite;
 let values = {
   marcha: 1,
   ie_ins: 1,
@@ -159,49 +164,49 @@ let t0 = 0,
 window.onload = () => {
   getPortsList((ports) => {
     const setup_panel = document.getElementById("setup_panel");
-    // const selectPortRead = document.getElementById("serial_ports1");
-    // const selectPortWrite = document.getElementById("serial_ports2");
+    // const selectPortAlberto = document.getElementById("serial_ports1");
+    // const selectPortFer = document.getElementById("serial_ports2");
     const info_panel = document.getElementById("info_panel");
 
-    // selectPortRead.innerHTML += ` <option value=""></option>`;
+    // selectPortAlberto.innerHTML += ` <option value=""></option>`;
     // ports.forEach((p) => {
-    //   selectPortRead.innerHTML += ` <option value="${p}">${p}</option>`;
+    //   selectPortAlberto.innerHTML += ` <option value="${p}">${p}</option>`;
     // });
 
-    // selectPortRead.onchange = (e) => {
-    portRead = new SerialPort("/dev/ttyUSB0", { baudRate });
+    // selectPortAlberto.onchange = (e) => {
+    portAlberto = new SerialPort("/dev/ttyUSB0", { baudRate });
     parserRead = new Readline();
-    portRead.pipe(parserRead);
-    // if (portWrite && parserWrite) {
+    portAlberto.pipe(parserRead);
+    // if (portFer && parserWrite) {
     //   setup_panel.style.display = "none";
     //   info_panel.style.display = "flex";
     // }
-    initRead(portRead, parserRead);
+    initRead(portAlberto, parserRead);
     // };
 
-    // selectPortWrite.innerHTML += ` <option value=""></option>`;
+    // selectPortFer.innerHTML += ` <option value=""></option>`;
     // ports.forEach((p) => {
-    //   selectPortWrite.innerHTML += ` <option value="${p}">${p}</option>`;
+    //   selectPortFer.innerHTML += ` <option value="${p}">${p}</option>`;
     // });
 
-    // selectPortWrite.onchange = (e) => {
-    portWrite = new SerialPort("/dev/ttyACM0", { baudRate });
+    // selectPortFer.onchange = (e) => {
+    portFer = new SerialPort("/dev/ttyACM0", { baudRate });
     parserWrite = new Readline();
-    portWrite.pipe(parserWrite);
+    portFer.pipe(parserWrite);
 
-    // if (portRead && parserRead) {
+    // if (portAlberto && parserRead) {
     // setup_panel.style.display = "none";
     info_panel.style.display = "flex";
     // }
 
-    initWrite(portWrite, parserWrite);
+    initWrite(portFer, parserWrite);
     // };
   });
 };
 
-// -------------------------------------------
+// ------------------------------ Arduino Alberto
 
-function initRead(portRead, parserRead) {
+function initRead(portAlberto, parserRead) {
   writer.pipe(fs.createWriteStream(`out-${Date.now()}.csv`));
 
   // ***** info inputs ***** //
@@ -211,9 +216,6 @@ function initRead(portRead, parserRead) {
     p_max: document.getElementById("p_max"),
     v_ins: document.getElementById("v_ins"),
     v_esp: document.getElementById("v_esp"),
-    ie: document.getElementById("ie"),
-    emb: document.getElementById("emb"),
-    parada_ins: document.getElementById("parada_ins"),
     fi_o2: document.getElementById("fi_o2"),
   };
 
@@ -241,7 +243,7 @@ function initRead(portRead, parserRead) {
     newDataFlow[2][i] = msg.flow_ex;
     newDataFlow[1][i + 1] = null;
     newDataFlow[2][i + 1] = null;
-    times[i] = (msg.time / 1000).toFixed(1);
+    // times[i] = (msg.time / 1000).toFixed(1);
 
     newDataPressure[1][i] = msg.pressure;
     newDataPressure[1][i + 1] = null;
@@ -303,14 +305,21 @@ function initRead(portRead, parserRead) {
   });
 }
 
-function initWrite(portWrite, parserWrite) {
+// ------------------------------ Arduino Fer
+
+function initWrite(portFer, parserWrite) {
   // ***** info inputs ***** //
 
   inputs = {
     ie: document.getElementById("ie"),
     emb: document.getElementById("emb"),
     parada_ins: document.getElementById("parada_ins"),
-    fi_o2: document.getElementById("fi_o2"),
+    fi_o2_a_min: document.getElementById("fi_o2_a_min"),
+    fi_o2_a_max: document.getElementById("fi_o2_a_max"),
+    v_a_min: document.getElementById("v_a_min"),
+    v_a_max: document.getElementById("v_a_max"),
+    p_a_min: document.getElementById("p_a_min"),
+    p_a_max: document.getElementById("p_a_max"),
   };
 
   const buttons = {
@@ -325,6 +334,7 @@ function initWrite(portWrite, parserWrite) {
     if (inputs[k]) inputs[k].innerHTML = values[k];
   });
   // ***** ----------- ***** //
+
   // ***** keyboard ***** //
 
   const keyboard = {
@@ -369,7 +379,7 @@ function initWrite(portWrite, parserWrite) {
   Object.keys(buttons).forEach((b) => {
     buttons[b].onclick = (e) => {
       values[e.currentTarget.dataset.key] = e.currentTarget.dataset.value;
-      portWrite.write(`<${valuesToSend()}>\n`);
+      portFer.write(`<${valuesToSend()}>\n`);
     };
   });
 
@@ -393,9 +403,13 @@ function initWrite(portWrite, parserWrite) {
   };
 
   keyboard.send.onclick = (e) => {
-    if (dataAccepted.includes(dataToSend.field)) {
+    if (dataAcceptedFer.includes(dataToSend.field)) {
       values[dataToSend.field] = dataToSend.value;
-      portWrite.write(`<${valuesToSend()}>\n`);
+      portFer.write(`<${valuesToSend()}>\n`);
+      keyboard.keypad.style.display = "none";
+    } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
+      values[dataToSend.field] = dataToSend.value;
+      portAlberto.write(`${dataToSend.field},${dataToSend.value}\n`);
       keyboard.keypad.style.display = "none";
     }
   };
