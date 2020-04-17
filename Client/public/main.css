@@ -218,3 +218,7 @@ table.alarma {
 .fi_o2 {
   cursor: auto;
 }
+
+.bis {
+  display: none;
+}

@@ -340,6 +340,9 @@ function initWrite(portFer, parserWrite) {
   const keyboard = {
     field_name: document.getElementById("field_name"),
     num_box: document.getElementById("num_box"),
+    bis: document.getElementById("bis"),
+    field_name_bis: document.getElementById("field_name_bis"),
+    num_box_bis: document.getElementById("num_box_bis"),
     keypad: document.getElementById("keypad"),
     send: document.getElementById("send"),
     delete: document.getElementById("delete"),
@@ -427,8 +430,8 @@ function initWrite(portFer, parserWrite) {
         emb,
         v_emb,
       });
-      inputsShow.v_ins.innerHTML = ins_acc.toFixed(0);
-      inputsShow.v_esp.innerHTML = ex_acc.toFixed(0);
+      inputsShow.v_ins.innerHTML = (ins_acc / 60).toFixed(0);
+      inputsShow.v_esp.innerHTML = (ex_acc / 60).toFixed(0);
       if (peep !== undefined) inputsShow.peep.innerHTML = peep.toFixed(1);
       if (p_max !== undefined) inputsShow.p_max.innerHTML = p_max.toFixed(1);
       ins_acc = 0;
@@ -443,7 +446,6 @@ function initWrite(portFer, parserWrite) {
 
 function updateValues(msg) {
   Object.keys(msg).forEach((k) => {
-    console.log("-----------> W", k, inputs[k], values[k], msg[k]);
     values[k] = msg[k];
     inputs.ie.innerHTML = (Number(msg.ie) * 100).toFixed(0);
     inputs.parada_ins.innerHTML = Number(msg.parada_ins).toFixed(1);
