@@ -14,7 +14,6 @@ body {
 
 .chart {
   position: relative;
-  background-color: whitesmoke;
   margin: 10px;
 }
 
@@ -83,7 +82,7 @@ input.double {
   left: 0;
 }
 
-#num_box {
+.num_box {
   height: 30px;
   width: 100%;
   background: white;
@@ -93,7 +92,7 @@ input.double {
   line-height: 30px;
 }
 
-#field_name {
+.field_name {
   padding-right: 10px;
 }
 

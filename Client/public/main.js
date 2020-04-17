@@ -19,13 +19,16 @@ const writer = csvWriter({
   ],
   sendHeaders: true,
 });
-const numberOfPoints = 150;
+const numberOfPoints = 300;
 const dataFlow = [[], [], []];
 const dataPressure = [[], []];
 // const times = [];
 const dataToSend = {
   field: "",
   value: "",
+  field_bis: "",
+  value_bis: "",
+  active: "value",
 };
 
 const dataAcceptedFer = [
@@ -341,10 +344,10 @@ function initWrite(portFer, parserWrite) {
 
   const keyboard = {
     field_name: document.getElementById("field_name"),
-    num_box: document.getElementById("num_box"),
+    value: document.getElementById("num_box"),
     bis: document.getElementById("bis"),
     field_name_bis: document.getElementById("field_name_bis"),
-    num_box_bis: document.getElementById("num_box_bis"),
+    value_bis: document.getElementById("num_box_bis"),
     keypad: document.getElementById("keypad"),
     send: document.getElementById("send"),
     delete: document.getElementById("delete"),
@@ -367,11 +370,19 @@ function initWrite(portFer, parserWrite) {
     keyboard.bis.style.display = "none";
   }
 
-  keyboard.num_box.onchange = (e) => {
+  keyboard.value.onchange = (e) => {
     dataToSend.value = e.currentTarget.value;
   };
-  keyboard.num_box_bis.onchange = (e) => {
+  keyboard.value_bis.onchange = (e) => {
     dataToSend.value_bis = e.currentTarget.value;
+  };
+
+  keyboard.value.onfocus = (e) => {
+    dataToSend.active = "value";
+  };
+  keyboard.value_bis.onfocus = (e) => {
+    console.log("--------------");
+    dataToSend.active = "value_bis";
   };
 
   Object.keys(inputs).forEach((key) => {
@@ -390,10 +401,11 @@ function initWrite(portFer, parserWrite) {
           dataToSend.field = e.currentTarget.id;
       }
       dataToSend.value = "";
+      dataToSend.value_bis = "";
       keyboard.field_name.innerHTML = dataToSend.field;
-      keyboard.num_box.value = dataToSend.value;
+      keyboard[dataToSend.active].value = dataToSend.value;
       keyboard.field_name_bis.innerHTML = dataToSend.field_bis;
-      keyboard.num_box_bis.value = dataToSend.value_bis;
+      keyboard[dataToSend.active].value = dataToSend.value_bis;
       if (keyboard.keypad.style.display == "none") {
         keyboard.keypad.style.display = "flex";
       }
@@ -409,26 +421,31 @@ function initWrite(portFer, parserWrite) {
 
   keyboard.keys.forEach((k) => {
     k.onclick = (e) => {
-      dataToSend.value += e.currentTarget.innerHTML;
-      keyboard.num_box.value = dataToSend.value;
+      dataToSend[dataToSend.active] += e.currentTarget.innerHTML;
+      keyboard[dataToSend.active].value = dataToSend[dataToSend.active];
     };
   });
 
   keyboard.keys.forEach((k) => {
     k.onclick = (e) => {
-      dataToSend.value += e.currentTarget.innerHTML;
-      keyboard.num_box.value = dataToSend.value;
+      console.log("--------------");
+
+      dataToSend[dataToSend.active] += e.currentTarget.innerHTML;
+      keyboard[dataToSend.active].value = dataToSend[dataToSend.active];
     };
   });
 
   keyboard.delete.onclick = (e) => {
-    dataToSend.value = dataToSend.value.slice(0, -1);
-    keyboard.num_box.value = dataToSend.value;
+    dataToSend[dataToSend.active] = dataToSend.value.slice(0, -1);
+    keyboard[dataToSend.active].value = dataToSend[dataToSend.active];
   };
 
   keyboard.send.onclick = (e) => {
     if (dataAcceptedFer.includes(dataToSend.field)) {
       values[dataToSend.field] = dataToSend.value;
+      if (dataToSend.field_bis) {
+        values[dataToSend.field_bis] = dataToSend.value_bis;
+      }
       console.log("-----------> W Fer", valuesToSend());
       portFer.write(`<${valuesToSend()}>\n`);
     } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
