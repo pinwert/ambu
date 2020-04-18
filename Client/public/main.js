@@ -28,7 +28,7 @@ const writerHis = csvWriter({
 const numberOfPoints = 400;
 const dataFlow = [[], [], []];
 const dataPressure = [[], []];
-const dataHis = [[], [], [], [], []];
+const dataHis = [[0], [], [], [], []];
 // const times = [];
 const dataToSend = {
   field: "",
@@ -553,6 +553,7 @@ function initWrite(portFer, parserWrite) {
       inputsShow.v_esp.innerHTML = v_esp;
       if (peep !== undefined) inputsShow.peep.innerHTML = peep.toFixed(1);
       if (p_max !== undefined) inputsShow.p_max.innerHTML = p_max.toFixed(1);
+      newDataHis[0][j] = j;
       newDataHis[1][j] = peep;
       newDataHis[2][j + 1] = null;
       newDataHis[3][j] = v_ins;
