@@ -112,24 +112,28 @@ const optsHis = {
   series: [
     {},
     {
-      label: "Flow ins",
+      label: "V ins",
       stroke: "red",
       fill: "rgba(237, 125, 49,0.3)",
+      scale: "a",
     },
     {
-      label: "Flow ex",
+      label: "V esp",
       stroke: "green",
       fill: "rgba(112, 143, 71,0.3)",
+      scale: "a",
     },
     {
       label: "peep",
       stroke: "blue",
       fill: "rgba(68, 114, 196,0.3)",
+      scale: "b",
     },
     {
       label: "p_max",
       stroke: "aquamarine",
       fill: "rgba(60, 10, 196,0.3)",
+      scale: "b",
     },
   ],
   axes: [
@@ -139,13 +143,23 @@ const optsHis = {
     {
       space: 10,
       show: true,
-      label: "Histoorico",
+      label: "Histórico",
       labelSize: 30,
       labelFont: "bold 12px Arial",
       font: "8px Arial",
       gap: 5,
       size: 50,
       stroke: "black",
+      scale: "a",
+    },
+    {
+      space: 10,
+      show: true,
+      font: "8px Arial",
+      gap: 5,
+      size: 50,
+      stroke: "black",
+      scale: "b",
     },
   ],
 };
