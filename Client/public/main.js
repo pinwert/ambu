@@ -94,8 +94,8 @@ window.onload = () => {
         i = 0;
       }
       if (t0) {
-        ins_acc += ((ins_v0 + Number(flow_ins)) / 2) * (Number(time) - t0);
-        ex_acc += ((ex_v0 + Number(flow_ex)) / 2) * (Number(time) - t0);
+        ins_acc += ((ins_v0 + Number(flow_ins)) / 2) * Number(time);
+        ex_acc += ((ex_v0 + Number(flow_ex)) / 2) * Number(time);
       }
       const newPressure = Number(pressure);
       peep = peep === undefined || peep > newPressure ? newPressure : peep;
