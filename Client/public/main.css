@@ -15,6 +15,7 @@ body {
 .chart {
   position: relative;
   margin: 10px;
+  background-color: white;
 }
 
 .info {
@@ -69,10 +70,12 @@ input.double {
   max-width: 25%;
 }
 
-#keypad {
+#keypad,
+#modal_his {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: center;
   flex: 1;
   width: 100%;
   position: absolute;
@@ -135,6 +138,9 @@ button {
 }
 #stop {
   background-color: red;
+}
+#his {
+  background-color: orange;
 }
 .keypad_wrapper {
   background-color: white;

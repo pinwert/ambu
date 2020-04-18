@@ -19,9 +19,16 @@ const writer = csvWriter({
   ],
   sendHeaders: true,
 });
-const numberOfPoints = 300;
+const writerHis = csvWriter({
+  separator: ",",
+  newline: "\n",
+  headers: ["peep", "p_max", "v_ins", "v_esp"],
+  sendHeaders: true,
+});
+const numberOfPoints = 400;
 const dataFlow = [[], [], []];
 const dataPressure = [[], []];
+const dataHis = [[], [], [], [], []];
 // const times = [];
 const dataToSend = {
   field: "",
@@ -52,6 +59,7 @@ const dataAcceptedAlberto = [
 for (var j = 0; j <= numberOfPoints; j++) {
   dataFlow[0][j] = j;
   dataPressure[0][j] = j;
+  dataHis[0][j] = j;
   // times[j] = 0;
 }
 
@@ -84,6 +92,55 @@ const optsFlow = {
       space: 10,
       show: true,
       label: "Volumen",
+      labelSize: 30,
+      labelFont: "bold 12px Arial",
+      font: "8px Arial",
+      gap: 5,
+      size: 50,
+      stroke: "black",
+    },
+  ],
+};
+
+const optsHis = {
+  width: window.innerWidth * 0.66 - 40,
+  height: window.innerHeight * 0.5 - 60,
+  scales: {
+    x: {
+      time: false,
+    },
+  },
+  series: [
+    {},
+    {
+      label: "Flow ins",
+      stroke: "red",
+      fill: "rgba(237, 125, 49,0.3)",
+    },
+    {
+      label: "Flow ex",
+      stroke: "green",
+      fill: "rgba(112, 143, 71,0.3)",
+    },
+    {
+      label: "peep",
+      stroke: "blue",
+      fill: "rgba(68, 114, 196,0.3)",
+    },
+    {
+      label: "p_max",
+      stroke: "aquamarine",
+      fill: "rgba(60, 10, 196,0.3)",
+    },
+  ],
+  axes: [
+    {
+      // times,
+    },
+    {
+      space: 10,
+      show: true,
+      label: "Histoorico",
       labelSize: 30,
       labelFont: "bold 12px Arial",
       font: "8px Arial",
@@ -143,6 +200,8 @@ const getPortsList = (callback) => {
   });
 };
 
+const hash = Date.now();
+
 let portAlberto, portFer, parserRead, parserWrite;
 let values = {
   marcha: 1,
@@ -166,7 +225,7 @@ let t0 = 0,
 
 window.onload = () => {
   getPortsList((ports) => {
-    const setup_panel = document.getElementById("setup_panel");
+    // const setup_panel = document.getElementById("setup_panel");
     // const selectPortAlberto = document.getElementById("serial_ports1");
     // const selectPortFer = document.getElementById("serial_ports2");
     const info_panel = document.getElementById("info_panel");
@@ -210,7 +269,7 @@ window.onload = () => {
 // ------------------------------ Arduino Alberto
 
 function initRead(portAlberto, parserRead) {
-  writer.pipe(fs.createWriteStream(`out-${Date.now()}.csv`));
+  writer.pipe(fs.createWriteStream(`out-${hash}.csv`));
 
   // ***** info inputs ***** //
 
@@ -256,7 +315,7 @@ function initRead(portAlberto, parserRead) {
       i = 0;
     }
 
-    if (i % 15 === 0) {
+    if (i % 10 === 0) {
       flow.setData(newDataFlow);
       pressure.setData(newDataPressure);
       inputsShow.fi_o2.innerHTML = Number(msg.fi_o2).toFixed(0);
@@ -311,6 +370,10 @@ function initRead(portAlberto, parserRead) {
 // ------------------------------ Arduino Fer
 
 function initWrite(portFer, parserWrite) {
+  writerHis.pipe(fs.createWriteStream(`out-${hash}.csv`));
+  const his = new uPlot(optsHis, dataHis, document.getElementById("hisChart"));
+  const newDataHis = [...dataHis];
+  let j = 0;
   // ***** info inputs ***** //
 
   inputs = {
@@ -330,6 +393,7 @@ function initWrite(portFer, parserWrite) {
   const buttons = {
     start: document.getElementById("start"),
     stop: document.getElementById("stop"),
+    his: document.getElementById("his"),
   };
 
   // ***** ----------- ***** //
@@ -362,6 +426,20 @@ function initWrite(portFer, parserWrite) {
     }
   };
 
+  // ***** ----------- ***** //
+
+  // ***** hiistorico ***** //
+
+  const historico = {
+    modal_his: document.getElementById("modal_his"),
+  };
+
+  historico.modal_his.onclick = (e) => {
+    if (e.target === historico.modal_his) {
+      historico.modal_his.style.display = "none";
+    }
+  };
+  historico.modal_his.style.display = "none";
   // ***** ----------- ***** //
 
   // ***** Update data ***** //
@@ -415,6 +493,9 @@ function initWrite(portFer, parserWrite) {
 
   Object.keys(buttons).forEach((b) => {
     buttons[b].onclick = (e) => {
+      if (b === "his") {
+        historico.modal_his.style.display = "flex";
+      }
       values[e.currentTarget.dataset.key] = e.currentTarget.dataset.value;
       portFer.write(`<${valuesToSend()}>\n`);
     };
@@ -467,10 +548,21 @@ function initWrite(portFer, parserWrite) {
         emb,
         v_emb,
       });
-      inputsShow.v_ins.innerHTML = (ins_acc / 60).toFixed(0);
-      inputsShow.v_esp.innerHTML = (ex_acc / 60).toFixed(0);
+      const v_ins = (ins_acc / 60).toFixed(0);
+      const v_esp = (ex_acc / 60).toFixed(0);
+      inputsShow.v_ins.innerHTML = v_ins;
+      inputsShow.v_esp.innerHTML = v_esp;
       if (peep !== undefined) inputsShow.peep.innerHTML = peep.toFixed(1);
       if (p_max !== undefined) inputsShow.p_max.innerHTML = p_max.toFixed(1);
+      newDataHis[1][j] = peep;
+      newDataHis[2][j] = p_max;
+      newDataHis[3][j] = v_ins;
+      newDataHis[4][j] = v_esp;
+      his;
+      j++;
+      if (process.env.WRITE_CSV !== "false")
+        writerHis.write([peep, p_max, v_ins, v_esp]);
+
       ins_acc = 0;
       ex_acc = 0;
       peep = undefined;
