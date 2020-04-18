@@ -122,7 +122,8 @@ export default function keyboard(inputs, send) {
       if (b === "his") {
         historico.modal_his.style.display = "flex";
       } else {
-        dataToSend[e.currentTarget.dataset.key] = e.currentTarget.dataset.value;
+        dataToSend.field = e.currentTarget.dataset.key;
+        dataToSend.value = e.currentTarget.dataset.value;
         send(dataToSend);
       }
     };
