@@ -555,12 +555,12 @@ function initWrite(portFer, parserWrite) {
       if (p_max !== undefined) inputsShow.p_max.innerHTML = p_max.toFixed(1);
       newDataHis[0][j] = j;
       newDataHis[1][j] = Number(v_ins);
+      newDataHis[1][j + 1] = null;
+      newDataHis[2][j] = Number(v_esp);
       newDataHis[2][j + 1] = null;
-      newDataHis[3][j] = Number(v_esp);
-      newDataHis[4][j + 1] = null;
-      newDataHis[1][j] = peep;
-      newDataHis[2][j + 1] = null;
-      newDataHis[3][j] = p_max;
+      newDataHis[3][j] = peep;
+      newDataHis[3][j + 1] = null;
+      newDataHis[4][j] = p_max;
       newDataHis[4][j + 1] = null;
       his.setData(newDataHis);
       j++;
