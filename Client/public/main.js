@@ -540,6 +540,7 @@ function initWrite(portFer, parserWrite) {
     if (line.startsWith("<")) {
       const data = line.slice(1, -2).split(",");
       const [marcha, ie, parada_ins, emb, v_emb] = data;
+      if (Number.isNaN(Number(marcha))) return;
       updateValues({
         marcha,
         ie,
