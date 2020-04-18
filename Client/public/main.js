@@ -9,14 +9,6 @@ const baudRate = 115200;
 const numberOfPoints = 400;
 const sampling = 10;
 
-const dataToSend = {
-  field: "",
-  value: "",
-  field_bis: "",
-  value_bis: "",
-  active: "value",
-};
-
 const dataAcceptedFer = [
   "marcha",
   "ie_ins",
@@ -64,7 +56,7 @@ window.onload = () => {
 
   const info = infoModule(values);
 
-  keyboard(dataToSend, info.inputs, () => {
+  keyboard(info.inputs, (dataToSend) => {
     if (dataAcceptedFer.includes(dataToSend.field)) {
       values[dataToSend.field] = dataToSend.value;
       if (dataToSend.field_bis) {

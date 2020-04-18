@@ -1,4 +1,12 @@
-export default function keyboard(dataToSend, inputs, send) {
+const dataToSend = {
+  field: "",
+  value: "",
+  field_bis: "",
+  value_bis: "",
+  active: "value",
+};
+
+export default function keyboard(inputs, send) {
   const k = {
     field_name: document.getElementById("field_name"),
     value: document.getElementById("num_box"),
@@ -103,7 +111,7 @@ export default function keyboard(dataToSend, inputs, send) {
   };
 
   k.send.onclick = (e) => {
-    send();
+    send(dataToSend);
     k.keypad.style.display = "none";
     k.bis.style.display = "none";
     dataToSend.field_bis = "";
@@ -115,7 +123,7 @@ export default function keyboard(dataToSend, inputs, send) {
         historico.modal_his.style.display = "flex";
       } else {
         dataToSend[e.currentTarget.dataset.key] = e.currentTarget.dataset.value;
-        send();
+        send(dataToSend);
       }
     };
   });
