@@ -1,35 +1,14 @@
-const baudRate = 115200;
 const SerialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
-const fs = require("fs");
-const csvWriter = require("csv-write-stream");
-const writer = csvWriter({
-  separator: ",",
-  newline: "\n",
-  headers: [
-    "pressure",
-    "flow_ins",
-    "derived_flow_ins",
-    "flow_ex",
-    "derived_flow_ex",
-    "time",
-    "ie",
-    "frequency",
-    "fi_o2",
-  ],
-  sendHeaders: true,
-});
-const writerHis = csvWriter({
-  separator: ",",
-  newline: "\n",
-  headers: ["peep", "p_max", "v_ins", "v_esp"],
-  sendHeaders: true,
-});
+import charts from "./charts.js";
+import csv from "./csv.js";
+import infoModule from "./info.js";
+import keyboard from "./keyboard.js";
+
+const baudRate = 115200;
 const numberOfPoints = 400;
-const dataFlow = [[], [], []];
-const dataPressure = [[], []];
-const dataHis = [[0], [], [], [], []];
-// const times = [];
+const sampling = 10;
+
 const dataToSend = {
   field: "",
   value: "",
@@ -56,167 +35,6 @@ const dataAcceptedAlberto = [
   "p_a_max",
 ];
 
-for (var j = 0; j <= numberOfPoints; j++) {
-  dataFlow[0][j] = j;
-  dataPressure[0][j] = j;
-  // times[j] = 0;
-}
-
-const optsFlow = {
-  width: window.innerWidth * 0.66 - 40,
-  height: window.innerHeight * 0.5 - 60,
-  scales: {
-    x: {
-      time: false,
-    },
-  },
-  series: [
-    {},
-    {
-      label: "Flow ins",
-      stroke: "red",
-      fill: "rgba(237, 125, 49,0.3)",
-    },
-    {
-      label: "Flow ex",
-      stroke: "green",
-      fill: "rgba(112, 143, 71,0.3)",
-    },
-  ],
-  axes: [
-    {
-      // times,
-    },
-    {
-      space: 10,
-      show: true,
-      label: "Volumen",
-      labelSize: 30,
-      labelFont: "bold 12px Arial",
-      font: "8px Arial",
-      gap: 5,
-      size: 50,
-      stroke: "black",
-    },
-  ],
-};
-
-const optsHis = {
-  width: window.innerWidth * 0.66 - 40,
-  height: window.innerHeight * 0.5 - 60,
-  scales: {
-    x: {
-      time: false,
-    },
-  },
-  series: [
-    {},
-    {
-      label: "V ins",
-      stroke: "red",
-      fill: "rgba(237, 125, 49,0.3)",
-      scale: "a",
-    },
-    {
-      label: "V esp",
-      stroke: "green",
-      fill: "rgba(112, 143, 71,0.3)",
-      scale: "a",
-    },
-    {
-      label: "peep",
-      stroke: "blue",
-      fill: "rgba(68, 114, 196,0.3)",
-      scale: "b",
-    },
-    {
-      label: "p_max",
-      stroke: "aquamarine",
-      fill: "rgba(60, 10, 196,0.3)",
-      scale: "b",
-    },
-  ],
-  axes: [
-    {
-      // times,
-    },
-    {
-      space: 10,
-      show: true,
-      label: "Histórico",
-      labelSize: 30,
-      labelFont: "bold 12px Arial",
-      font: "8px Arial",
-      gap: 5,
-      size: 50,
-      stroke: "black",
-      scale: "a",
-    },
-    {
-      side: 1,
-      space: 10,
-      show: true,
-      font: "8px Arial",
-      gap: 5,
-      size: 50,
-      stroke: "black",
-      scale: "b",
-    },
-  ],
-};
-
-const optsPressure = {
-  width: window.innerWidth * 0.66 - 40,
-  height: window.innerHeight * 0.5 - 60,
-  scales: {
-    x: {
-      time: false,
-    },
-  },
-  series: [
-    {
-      // times,
-    },
-    {
-      scale: 0.01,
-      side: 0.01,
-      label: "pressure",
-      stroke: "blue",
-      fill: "rgba(68, 114, 196,0.3)",
-    },
-  ],
-  axes: [
-    {
-      // times,
-    },
-    {
-      space: 10,
-      show: true,
-      label: "Presión",
-      labelSize: 30,
-      labelFont: "bold 12px Arial",
-      font: "8px Arial",
-      gap: 5,
-      size: 50,
-      stroke: "black",
-    },
-  ],
-};
-
-const getPortsList = (callback) => {
-  var portsList = [];
-
-  SerialPort.list().then((ports) => {
-    ports.forEach((port) => {
-      portsList.push(port.path);
-    });
-    callback(portsList);
-  });
-};
-
-const hash = Date.now();
-
-let portAlberto, portFer, parserRead, parserWrite;
 let values = {
   marcha: 1,
   ie_ins: 1,
@@ -225,9 +43,6 @@ let values = {
   emb: 15,
   v_emb: 420,
 };
-
-let inputs = {};
-let inputsShow = {};
 
 let t0 = 0,
   ins_v0 = 0,
@@ -238,318 +53,73 @@ let t0 = 0,
   p_max;
 
 window.onload = () => {
-  getPortsList((ports) => {
-    // const setup_panel = document.getElementById("setup_panel");
-    // const selectPortAlberto = document.getElementById("serial_ports1");
-    // const selectPortFer = document.getElementById("serial_ports2");
-    const info_panel = document.getElementById("info_panel");
+  const ch = charts(numberOfPoints, sampling);
+  const portAlberto = new SerialPort("/dev/ttyUSB0", { baudRate });
+  const parserRead = new Readline();
+  portAlberto.pipe(parserRead);
 
-    // selectPortAlberto.innerHTML += ` <option value=""></option>`;
-    // ports.forEach((p) => {
-    //   selectPortAlberto.innerHTML += ` <option value="${p}">${p}</option>`;
-    // });
+  const portFer = new SerialPort("/dev/ttyACM0", { baudRate });
+  const parserWrite = new Readline();
+  portFer.pipe(parserWrite);
 
-    // selectPortAlberto.onchange = (e) => {
-    portAlberto = new SerialPort("/dev/ttyUSB0", { baudRate });
-    parserRead = new Readline();
-    portAlberto.pipe(parserRead);
-    // if (portFer && parserWrite) {
-    //   setup_panel.style.display = "none";
-    //   info_panel.style.display = "flex";
-    // }
-    initRead(portAlberto, parserRead);
-    // };
+  const info = infoModule(values);
 
-    // selectPortFer.innerHTML += ` <option value=""></option>`;
-    // ports.forEach((p) => {
-    //   selectPortFer.innerHTML += ` <option value="${p}">${p}</option>`;
-    // });
-
-    // selectPortFer.onchange = (e) => {
-    portFer = new SerialPort("/dev/ttyACM0", { baudRate });
-    parserWrite = new Readline();
-    portFer.pipe(parserWrite);
-
-    // if (portAlberto && parserRead) {
-    // setup_panel.style.display = "none";
-    info_panel.style.display = "flex";
-    // }
-
-    initWrite(portFer, parserWrite);
-    // };
-  });
-};
-
-// ------------------------------ Arduino Alberto
-
-function initRead(portAlberto, parserRead) {
-  writer.pipe(fs.createWriteStream(`out-${hash}.csv`));
-
-  // ***** info inputs ***** //
-
-  inputsShow = {
-    peep: document.getElementById("peep"),
-    p_max: document.getElementById("p_max"),
-    v_ins: document.getElementById("v_ins"),
-    v_esp: document.getElementById("v_esp"),
-    fi_o2: document.getElementById("fi_o2"),
-  };
-
-  // ***** ----------- ***** //
-
-  // ***** Draw the charts ***** //
-
-  const newDataFlow = [...dataFlow];
-  const newDataPressure = [...dataPressure];
-
-  const flow = new uPlot(
-    optsFlow,
-    dataFlow,
-    document.getElementById("flowChart")
-  );
-  const pressure = new uPlot(
-    optsPressure,
-    dataPressure,
-    document.getElementById("pressureChart")
-  );
-
-  let i = 0;
-  const receiveData = (msg) => {
-    newDataFlow[1][i] = msg.flow_ins;
-    newDataFlow[2][i] = msg.flow_ex;
-    newDataFlow[1][i + 1] = null;
-    newDataFlow[2][i + 1] = null;
-    // times[i] = (msg.time / 1000).toFixed(1);
-
-    newDataPressure[1][i] = msg.pressure;
-    newDataPressure[1][i + 1] = null;
-    i++;
-
-    if (i > numberOfPoints) {
-      i = 0;
-    }
-
-    if (i % 10 === 0) {
-      flow.setData(newDataFlow);
-      pressure.setData(newDataPressure);
-      inputsShow.fi_o2.innerHTML = Number(msg.fi_o2).toFixed(0);
-    }
-    if (t0) {
-      ins_acc +=
-        ((ins_v0 + Number(msg.flow_ins)) / 2) * (Number(msg.time) - t0);
-      ex_acc += ((ex_v0 + Number(msg.flow_ex)) / 2) * (Number(msg.time) - t0);
-    }
-    const index = i > 0 ? i - 1 : numberOfPoints - 1;
-    const newPressure = Number(newDataPressure[1][index]);
-    peep = peep === undefined || peep > newPressure ? newPressure : peep;
-    p_max =
-      p_max === undefined || p_max < newPressure ? Number(newPressure) : p_max;
-    ins_v0 = Number(msg.flow_ins);
-    ex_v0 = Number(msg.flow_ex);
-    t0 = Number(msg.time);
-  };
-
-  // ***** ----------- ***** //
-
-  parserRead.on("data", (line) => {
-    const data = line.slice(0, -1).split(",");
-    if (Number(data[0]) || Number(data[0]) == 0) {
-      const [
-        pressure,
-        flow_ins,
-        derivada_flow_ins,
-        flow_ex,
-        derivada_flow_ex,
-        time,
-        ie,
-        frequency,
-        fi_o2,
-      ] = data;
-      receiveData({
-        pressure,
-        flow_ins,
-        derivada_flow_ins,
-        flow_ex,
-        derivada_flow_ex,
-        time,
-        ie,
-        frequency,
-        fi_o2,
-      });
-      if (process.env.WRITE_CSV !== "false") writer.write(data);
-    }
-  });
-}
-
-// ------------------------------ Arduino Fer
-
-function initWrite(portFer, parserWrite) {
-  writerHis.pipe(fs.createWriteStream(`out-his-${hash}.csv`));
-  const his = new uPlot(optsHis, dataHis, document.getElementById("hisChart"));
-  const newDataHis = [...dataHis];
-  let j = 0;
-  // ***** info inputs ***** //
-
-  inputs = {
-    v_ins: document.getElementById("v_ins"),
-    v_esp: document.getElementById("v_esp"),
-    ie: document.getElementById("ie"),
-    emb: document.getElementById("emb"),
-    parada_ins: document.getElementById("parada_ins"),
-    fi_o2_a_min: document.getElementById("fi_o2_a_min"),
-    fi_o2_a_max: document.getElementById("fi_o2_a_max"),
-    v_a_min: document.getElementById("v_a_min"),
-    v_a_max: document.getElementById("v_a_max"),
-    p_a_min: document.getElementById("p_a_min"),
-    p_a_max: document.getElementById("p_a_max"),
-  };
-
-  const buttons = {
-    start: document.getElementById("start"),
-    stop: document.getElementById("stop"),
-    his: document.getElementById("his"),
-  };
-
-  // ***** ----------- ***** //
-
-  // ***** default values ***** //
-  Object.keys(values).forEach((k) => {
-    if (inputs[k]) inputs[k].innerHTML = values[k];
-  });
-  // ***** ----------- ***** //
-
-  // ***** keyboard ***** //
-
-  const keyboard = {
-    field_name: document.getElementById("field_name"),
-    value: document.getElementById("num_box"),
-    bis: document.getElementById("bis"),
-    field_name_bis: document.getElementById("field_name_bis"),
-    value_bis: document.getElementById("num_box_bis"),
-    keypad: document.getElementById("keypad"),
-    send: document.getElementById("send"),
-    delete: document.getElementById("delete"),
-    keys: document.querySelectorAll("#keypad .key"),
-  };
-
-  keyboard.keypad.onclick = (e) => {
-    if (e.target === keyboard.keypad) {
-      keyboard.keypad.style.display = "none";
-      keyboard.bis.style.display = "none";
-      dataToSend.field_bis = "";
-    }
-  };
-
-  // ***** ----------- ***** //
-
-  // ***** hiistorico ***** //
-
-  const historico = {
-    modal_his: document.getElementById("modal_his"),
-  };
-
-  historico.modal_his.onclick = (e) => {
-    if (e.target === historico.modal_his) {
-      historico.modal_his.style.display = "none";
-    }
-  };
-  historico.modal_his.style.display = "none";
-  // ***** ----------- ***** //
-
-  // ***** Update data ***** //
-
-  if (!dataToSend.field) {
-    keyboard.keypad.style.display = "none";
-    keyboard.bis.style.display = "none";
-    dataToSend.field_bis = "";
-  }
-
-  keyboard.value.onchange = (e) => {
-    dataToSend.value = e.currentTarget.value;
-  };
-  keyboard.value_bis.onchange = (e) => {
-    dataToSend.value_bis = e.currentTarget.value;
-  };
-
-  keyboard.value.onfocus = (e) => {
-    dataToSend.active = "value";
-  };
-  keyboard.value_bis.onfocus = (e) => {
-    dataToSend.active = "value_bis";
-  };
-
-  Object.keys(inputs).forEach((key) => {
-    inputs[key].onclick = (e) => {
-      switch (e.currentTarget.id) {
-        case "ie":
-          dataToSend.field = "ie_ins";
-          dataToSend.field_bis = "ie_esp";
-          keyboard.bis.style.display = "flex";
-          break;
-        case "v_ins":
-        case "v_esp":
-          dataToSend.field = "v_emb";
-          break;
-        default:
-          dataToSend.field = e.currentTarget.id;
-      }
-      dataToSend.value = "";
-      dataToSend.value_bis = "";
-      keyboard.field_name.innerHTML = dataToSend.field;
-      keyboard.value.value = dataToSend.value;
-      keyboard.field_name_bis.innerHTML = dataToSend.field_bis;
-      keyboard.value_bis.value = dataToSend.value_bis;
-      if (keyboard.keypad.style.display == "none") {
-        keyboard.keypad.style.display = "flex";
-      }
-    };
-  });
-
-  Object.keys(buttons).forEach((b) => {
-    buttons[b].onclick = (e) => {
-      if (b === "his") {
-        historico.modal_his.style.display = "flex";
-      }
-      values[e.currentTarget.dataset.key] = e.currentTarget.dataset.value;
-      portFer.write(`<${valuesToSend()}>\n`);
-    };
-  });
-
-  keyboard.keys.forEach((k) => {
-    k.onclick = (e) => {
-      dataToSend[dataToSend.active] += e.currentTarget.innerHTML;
-      keyboard[dataToSend.active].value = dataToSend[dataToSend.active];
-    };
-  });
-
-  keyboard.keys.forEach((k) => {
-    k.onclick = (e) => {
-      dataToSend[dataToSend.active] += e.currentTarget.innerHTML;
-      keyboard[dataToSend.active].value = dataToSend[dataToSend.active];
-    };
-  });
-
-  keyboard.delete.onclick = (e) => {
-    dataToSend[dataToSend.active] = dataToSend.value.slice(0, -1);
-    keyboard[dataToSend.active].value = dataToSend[dataToSend.active];
-  };
-
-  keyboard.send.onclick = (e) => {
+  keyboard(dataToSend, info.inputs, (values) => {
     if (dataAcceptedFer.includes(dataToSend.field)) {
-      values[dataToSend.field] = dataToSend.value;
-      if (dataToSend.field_bis) {
-        values[dataToSend.field_bis] = dataToSend.value_bis;
-      }
+      values.forEach(({ key, value }) => {
+        values[key] = value;
+      });
       console.log("-----------> W Fer", valuesToSend(), dataToSend);
       portFer.write(`<${valuesToSend()}>\n`);
     } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
       console.log("-----------> W Alberto", dataToSend.field, dataToSend.value);
       portAlberto.write(`${dataToSend.field},${dataToSend.value}\n`);
     }
-    keyboard.keypad.style.display = "none";
-    keyboard.bis.style.display = "none";
-    dataToSend.field_bis = "";
-  };
+  });
+
+  // ------------------------------ Arduino Alberto
+
+  let i = 0;
+
+  parserRead.on("data", (line) => {
+    const data = line.slice(0, -1).split(",");
+    if (Number(data[0]) || Number(data[0]) == 0) {
+      const [time, pressure, flow_ins, flow_ex, fi_o2] = data;
+      ch.updateFlowPressure(
+        {
+          time,
+          pressure,
+          flow_ins,
+          flow_ex,
+          fi_o2,
+        },
+        i
+      );
+      i++;
+      info.inputsShow.fi_o2.innerHTML = Number(fi_o2).toFixed(0);
+      if (i > numberOfPoints) {
+        i = 0;
+      }
+      if (t0) {
+        ins_acc += ((ins_v0 + Number(flow_ins)) / 2) * (Number(time) - t0);
+        ex_acc += ((ex_v0 + Number(flow_ex)) / 2) * (Number(time) - t0);
+      }
+      const newPressure = Number(pressure);
+      peep = peep === undefined || peep > newPressure ? newPressure : peep;
+      p_max =
+        p_max === undefined || p_max < newPressure
+          ? Number(newPressure)
+          : p_max;
+      ins_v0 = Number(flow_ins);
+      ex_v0 = Number(flow_ex);
+      t0 = Number(time);
+      csv.write(data);
+    }
+  });
+
+  // ------------------------------ Arduino Fer
+
+  let j = 0;
 
   parserWrite.on("data", (line) => {
     if (line.startsWith("<")) {
@@ -565,27 +135,18 @@ function initWrite(portFer, parserWrite) {
       });
       const v_ins = (ins_acc / 60).toFixed(0);
       const v_esp = (ex_acc / 60).toFixed(0);
-      inputsShow.v_ins.innerHTML = v_ins;
-      inputsShow.v_esp.innerHTML = v_esp;
-      if (peep !== undefined) inputsShow.peep.innerHTML = peep.toFixed(1);
-      if (p_max !== undefined) inputsShow.p_max.innerHTML = p_max.toFixed(1);
-      newDataHis[0][j] = j;
-      newDataHis[1][j] = Number(v_ins);
-      newDataHis[1][j + 1] = null;
-      newDataHis[2][j] = Number(v_esp);
-      newDataHis[2][j + 1] = null;
-      newDataHis[3][j] = peep;
-      newDataHis[3][j + 1] = null;
-      newDataHis[4][j] = p_max;
-      newDataHis[4][j + 1] = null;
-      his.setData(newDataHis);
+      info.inputsShow.v_ins.innerHTML = v_ins;
+      info.inputsShow.v_esp.innerHTML = v_esp;
+      if (peep !== undefined) info.inputsShow.peep.innerHTML = peep.toFixed(1);
+      if (p_max !== undefined)
+        info.inputsShow.p_max.innerHTML = p_max.toFixed(1);
+      ch.updateHistory({ v_ins, v_esp, peep, p_max }, j);
       j++;
 
       if (j > numberOfPoints / 4) {
         j = 0;
       }
-      if (process.env.WRITE_CSV !== "false")
-        writerHis.write([peep, p_max, v_ins, v_esp]);
+      csv.writerHistory([peep, p_max, v_ins, v_esp]);
 
       ins_acc = 0;
       ex_acc = 0;
@@ -594,19 +155,18 @@ function initWrite(portFer, parserWrite) {
       console.log("---------> Write", line);
     }
   });
-  // ***** ----------- ***** //
-}
 
-function updateValues(msg) {
-  Object.keys(msg).forEach((k) => {
-    values[k] = msg[k];
-    inputs.ie.innerHTML = (Number(msg.ie) * 100).toFixed(0);
-    inputs.parada_ins.innerHTML = Number(msg.parada_ins).toFixed(1);
-    inputs.emb.innerHTML = Number(msg.emb).toFixed(0);
-  });
-}
+  function updateValues(msg) {
+    Object.keys(msg).forEach((k) => {
+      values[k] = msg[k];
+      info.inputs.ie.innerHTML = (Number(msg.ie) * 100).toFixed(0);
+      info.inputs.parada_ins.innerHTML = Number(msg.parada_ins).toFixed(1);
+      info.inputs.emb.innerHTML = Number(msg.emb).toFixed(0);
+    });
+  }
 
-function valuesToSend() {
-  const { marcha, ie_ins, ie_esp, parada_ins, emb, v_emb } = values;
-  return [marcha, ie_ins, ie_esp, parada_ins, emb, v_emb];
-}
+  function valuesToSend() {
+    const { marcha, ie_ins, ie_esp, parada_ins, emb, v_emb } = values;
+    return [marcha, ie_ins, ie_esp, parada_ins, emb, v_emb];
+  }
+};
