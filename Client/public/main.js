@@ -153,6 +153,7 @@ const optsHis = {
       scale: "a",
     },
     {
+      side: 1,
       space: 10,
       show: true,
       font: "8px Arial",
