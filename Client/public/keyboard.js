@@ -103,12 +103,7 @@ export default function keyboard(dataToSend, inputs, send) {
   };
 
   k.send.onclick = (e) => {
-    send([
-      { key: dataToSend.field, value: dataToSend.value },
-      ...(dataToSend.field_bis !== undefined
-        ? [{ key: dataToSend.field_bis, value: dataToSend.value_bis }]
-        : []),
-    ]);
+    send();
     k.keypad.style.display = "none";
     k.bis.style.display = "none";
     dataToSend.field_bis = "";
@@ -118,8 +113,10 @@ export default function keyboard(dataToSend, inputs, send) {
     buttons[b].onclick = (e) => {
       if (b === "his") {
         historico.modal_his.style.display = "flex";
+      } else {
+        dataToSend[e.currentTarget.dataset.key] = e.currentTarget.dataset.value;
+        send();
       }
-      send([e.currentTarget.dataset]);
     };
   });
 }

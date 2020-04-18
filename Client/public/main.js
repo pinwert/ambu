@@ -64,11 +64,12 @@ window.onload = () => {
 
   const info = infoModule(values);
 
-  keyboard(dataToSend, info.inputs, (values) => {
-    if (dataAcceptedFer.includes(dataToSend.field)) {
-      values.forEach(({ key, value }) => {
-        values[key] = value;
-      });
+  keyboard(dataToSend, info.inputs, () => {
+    if (dataAcceptedFer.includes(values.field)) {
+      values[dataToSend.field] = dataToSend.value;
+      if (dataToSend.field_bis) {
+        values[dataToSend.field_bis] = dataToSend.value_bis;
+      }
       console.log("-----------> W Fer", valuesToSend(), dataToSend);
       portFer.write(`<${valuesToSend()}>\n`);
     } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
