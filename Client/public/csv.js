@@ -20,6 +20,6 @@ writerData.pipe(fs.createWriteStream(`out-${hash}.csv`));
 writerHistory.pipe(fs.createWriteStream(`out-his-${hash}.csv`));
 
 export default {
-  write: writerData.write,
-  writerHistory: writerHistory.write,
+  writerData,
+  writerHistory,
 };

@@ -113,7 +113,7 @@ window.onload = () => {
       ins_v0 = Number(flow_ins);
       ex_v0 = Number(flow_ex);
       t0 = Number(time);
-      csv.write(data);
+      csv.writerData.write(data);
     }
   });
 
@@ -146,7 +146,7 @@ window.onload = () => {
       if (j > numberOfPoints / 4) {
         j = 0;
       }
-      csv.writerHistory([peep, p_max, v_ins, v_esp]);
+      csv.writerHistory.write([peep, p_max, v_ins, v_esp]);
 
       ins_acc = 0;
       ex_acc = 0;
