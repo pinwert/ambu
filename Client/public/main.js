@@ -558,7 +558,7 @@ function initWrite(portFer, parserWrite) {
       newDataHis[2][j] = p_max;
       newDataHis[3][j] = v_ins;
       newDataHis[4][j] = v_esp;
-      his;
+      his.setData(newDataHis);
       j++;
       if (process.env.WRITE_CSV !== "false")
         writerHis.write([peep, p_max, v_ins, v_esp]);
