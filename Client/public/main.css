@@ -103,7 +103,7 @@ input.double {
   padding-right: 10px;
 }
 
-td {
+.keypad_wrapper td {
   width: 33%;
   color: white;
   background-color: rgba(25, 25, 25, 0.9);
