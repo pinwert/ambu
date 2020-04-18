@@ -65,7 +65,7 @@ window.onload = () => {
   const info = infoModule(values);
 
   keyboard(dataToSend, info.inputs, () => {
-    if (dataAcceptedFer.includes(values.field)) {
+    if (dataAcceptedFer.includes(dataToSend.field)) {
       values[dataToSend.field] = dataToSend.value;
       if (dataToSend.field_bis) {
         values[dataToSend.field_bis] = dataToSend.value_bis;
