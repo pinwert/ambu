@@ -59,7 +59,6 @@ const dataAcceptedAlberto = [
 for (var j = 0; j <= numberOfPoints; j++) {
   dataFlow[0][j] = j;
   dataPressure[0][j] = j;
-  dataHis[0][j] = j;
   // times[j] = 0;
 }
 
@@ -555,11 +554,19 @@ function initWrite(portFer, parserWrite) {
       if (peep !== undefined) inputsShow.peep.innerHTML = peep.toFixed(1);
       if (p_max !== undefined) inputsShow.p_max.innerHTML = p_max.toFixed(1);
       newDataHis[1][j] = peep;
-      newDataHis[2][j] = p_max;
+      newDataHis[2][j + 1] = null;
       newDataHis[3][j] = v_ins;
-      newDataHis[4][j] = v_esp;
+      newDataHis[4][j + 1] = null;
+      newDataHis[1][j] = peep;
+      newDataHis[2][j + 1] = null;
+      newDataHis[3][j] = v_ins;
+      newDataHis[4][j + 1] = null;
       his.setData(newDataHis);
       j++;
+
+      if (j > numberOfPoints / 4) {
+        j = 0;
+      }
       if (process.env.WRITE_CSV !== "false")
         writerHis.write([peep, p_max, v_ins, v_esp]);
 
