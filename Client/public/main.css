@@ -31,6 +31,10 @@ body {
   display: none !important;
 }
 
+#hisChart .legend {
+  display: block !important;
+}
+
 .row {
   display: flex;
   justify-content: space-between;
