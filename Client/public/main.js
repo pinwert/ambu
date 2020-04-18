@@ -369,7 +369,7 @@ function initRead(portAlberto, parserRead) {
 // ------------------------------ Arduino Fer
 
 function initWrite(portFer, parserWrite) {
-  writerHis.pipe(fs.createWriteStream(`out-${hash}.csv`));
+  writerHis.pipe(fs.createWriteStream(`out-his-${hash}.csv`));
   const his = new uPlot(optsHis, dataHis, document.getElementById("hisChart"));
   const newDataHis = [...dataHis];
   let j = 0;
@@ -554,9 +554,9 @@ function initWrite(portFer, parserWrite) {
       if (peep !== undefined) inputsShow.peep.innerHTML = peep.toFixed(1);
       if (p_max !== undefined) inputsShow.p_max.innerHTML = p_max.toFixed(1);
       newDataHis[0][j] = j;
-      newDataHis[1][j] = v_ins;
+      newDataHis[1][j] = Number(v_ins);
       newDataHis[2][j + 1] = null;
-      newDataHis[3][j] = v_esp;
+      newDataHis[3][j] = Number(v_esp);
       newDataHis[4][j + 1] = null;
       newDataHis[1][j] = peep;
       newDataHis[2][j + 1] = null;
