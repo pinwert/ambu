@@ -106,7 +106,7 @@ window.onload = () => {
       timeoutReconect = setTimeout(reconect, 2000);
     } else {
       if (info.inputs[data[0]] && !["v_ins", "v_esp"].includes(data[0])) {
-        info.inputs[data[0]] = data[1];
+        info.inputs[data[0]].innerHTML = data[1];
       }
     }
   });
