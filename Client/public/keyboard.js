@@ -6,7 +6,7 @@ const dataToSend = {
   active: "value",
 };
 
-export default function keyboard(inputs, values, send) {
+export default function keyboard(inputs, values, showHistory, send) {
   const k = {
     field_name: document.getElementById("field_name"),
     value: document.getElementById("num_box"),
@@ -124,6 +124,7 @@ export default function keyboard(inputs, values, send) {
     buttons[b].onclick = (e) => {
       if (b === "his") {
         historico.modal_his.style.display = "flex";
+        showHistory();
       } else {
         dataToSend.field = e.currentTarget.dataset.key;
         dataToSend.value = e.currentTarget.dataset.value;

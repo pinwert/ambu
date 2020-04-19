@@ -183,21 +183,13 @@ export default function charts(numberOfPoints, sampling) {
     dataFlow[0][j] = j / 50;
     dataPressure[0][j] = j / 50;
   }
-  const flow = new uPlot(
-    optsFlow,
-    dataFlow,
-    document.getElementById("flowChart")
-  );
-  const pressure = new uPlot(
+  const flow = uPlot(optsFlow, dataFlow, document.getElementById("flowChart"));
+  const pressure = uPlot(
     optsPressure,
     dataPressure,
     document.getElementById("pressureChart")
   );
-  const history = new uPlot(
-    optsHis,
-    dataHis,
-    document.getElementById("hisChart")
-  );
+  const history = uPlot(optsHis, dataHis, document.getElementById("hisChart"));
 
   function updateFlowPressure(msg, i) {
     dataFlow[1][i] = msg.flow_ins;
@@ -228,5 +220,9 @@ export default function charts(numberOfPoints, sampling) {
     dataHis[6][i + 1] = null;
     history.setData(dataHis);
   }
-  return { updateFlowPressure, updateHistory };
+  return {
+    updateFlowPressure,
+    updateHistory,
+    showHistory: () => history.syncRect(),
+  };
 }

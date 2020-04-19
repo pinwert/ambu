@@ -176,7 +176,7 @@ window.onload = () => {
 
   const info = infoModule(values);
 
-  keyboard(info.inputs, values, sendData);
+  keyboard(info.inputs, values, ch.showHistory, sendData);
 
   function sendData(dataToSend) {
     if (dataAcceptedFer.includes(dataToSend.field)) {
