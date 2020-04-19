@@ -47,9 +47,11 @@ let t0 = 0,
   peep,
   p_max;
 
+let timeoutReconect;
+
 window.onload = () => {
   const ch = charts(numberOfPoints, sampling);
-  const portAlberto = new SerialPort("/dev/ttyUSB0", { baudRate });
+  let portAlberto = new SerialPort("/dev/ttyUSB0", { baudRate });
   const parserRead = new Readline();
   portAlberto.pipe(parserRead);
 
@@ -62,6 +64,7 @@ window.onload = () => {
   let i = 0;
 
   parserRead.on("data", (line) => {
+    clearTimeout(timeoutReconect);
     const data = line.slice(0, -1).split(",");
     if (Number(data[0]) || Number(data[0]) == 0) {
       const [time, pressure, flow_ins, flow_ex, fi_o2] = data;
@@ -94,8 +97,16 @@ window.onload = () => {
       ex_v0 = Number(flow_ex);
       t0 = Number(time);
       csv.writerData.write(data);
+      timeoutReconect = setTimeout(reconect, 2000);
     }
   });
+
+  function reconect() {
+    portAlberto.close(() => {
+      portAlberto = new SerialPort("/dev/ttyUSB0", { baudRate });
+      portAlberto.pipe(parserRead);
+    });
+  }
 
   // ------------------------------ Arduino Fer
 
@@ -152,7 +163,7 @@ window.onload = () => {
 
   const info = infoModule(values);
 
-  keyboard(info.inputs, sendData);
+  keyboard(info.inputs, values, sendData);
 
   function sendData(dataToSend) {
     if (dataAcceptedFer.includes(dataToSend.field)) {

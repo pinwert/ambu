@@ -6,7 +6,7 @@ const dataToSend = {
   active: "value",
 };
 
-export default function keyboard(inputs, send) {
+export default function keyboard(inputs, values, send) {
   const k = {
     field_name: document.getElementById("field_name"),
     value: document.getElementById("num_box"),
@@ -80,7 +80,7 @@ export default function keyboard(inputs, send) {
         default:
           dataToSend.field = e.currentTarget.id;
       }
-      dataToSend.value = "";
+      dataToSend.value = values[e.currentTarget.id];
       dataToSend.value_bis = "";
       k.field_name.innerHTML = dataToSend.field;
       k.value.value = dataToSend.value;
