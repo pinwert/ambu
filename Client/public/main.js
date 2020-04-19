@@ -166,7 +166,6 @@ window.onload = () => {
 
   function updateValues(msg) {
     Object.keys(msg).forEach((k) => {
-      values[k] = msg[k];
       info.inputs.ie_ins.innerHTML = Number(msg.ie_ins).toFixed(1);
       info.inputs.ie_esp.innerHTML = Number(msg.ie_esp).toFixed(1);
       info.inputs.parada_ins.innerHTML = Number(msg.parada_ins).toFixed(1);
