@@ -218,6 +218,10 @@ export default function charts(numberOfPoints, sampling) {
     dataHis[3][i + 1] = null;
     dataHis[4][i] = msg.p_max;
     dataHis[4][i + 1] = null;
+    dataHis[5][i] = msg.ie;
+    dataHis[5][i + 1] = null;
+    dataHis[6][i] = msg.emb;
+    dataHis[6][i + 1] = null;
     history.setData(dataHis);
   }
   return { updateFlowPressure, updateHistory };
