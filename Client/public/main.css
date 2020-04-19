@@ -192,10 +192,10 @@ table {
 }
 .alarma_titulo {
   position: absolute;
-  top: 6px;
+  top: 0;
   left: -30px;
   background-color: white;
-  padding: 10px 15px;
+  padding: 5px 15px;
   font-size: 20px;
 }
 .alarma {
