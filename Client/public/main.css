@@ -43,6 +43,10 @@ body {
   position: relative;
 }
 
+.row.input {
+  max-width: 50%;
+}
+
 .column {
   flex-direction: column;
   display: flex;
