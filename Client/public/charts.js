@@ -49,6 +49,10 @@ const optsHis = {
       time: false,
     },
   },
+  cursor: {
+    left: window.innerWidth * 0.1,
+    top: window.innerWidth * 0.1,
+  },
   series: [
     {},
     {
