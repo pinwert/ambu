@@ -7,7 +7,7 @@ import keyboard from "./keyboard.js";
 
 const baudRate = 115200;
 const numberOfPoints = 400;
-const sampling = 10;
+const sampling = 5;
 
 const dataAcceptedFer = [
   "marcha",
