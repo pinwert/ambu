@@ -8,7 +8,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
     },
-    fullscreen: true,
+    // fullscreen: true,
     // kiosk: true,
   });
 
