@@ -76,11 +76,12 @@ export default function keyboard(inputs, values, send) {
         case "v_ins":
         case "v_esp":
           dataToSend.field = "v_emb";
+          dataToSend.value = values.v_emb;
           break;
         default:
           dataToSend.field = e.currentTarget.id;
+          dataToSend.value = values[e.currentTarget.id];
       }
-      dataToSend.value = values[e.currentTarget.id];
       dataToSend.value_bis = "";
       k.field_name.innerHTML = dataToSend.field;
       k.value.value = dataToSend.value;

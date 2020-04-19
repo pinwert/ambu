@@ -211,6 +211,9 @@ table {
   box-shadow: none;
   text-align: center;
 }
+.value.alarma {
+  font-size: 24px;
+}
 
 table.alarma {
   border-radius: 20px;

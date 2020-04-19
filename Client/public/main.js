@@ -37,6 +37,12 @@ let values = {
   parada_ins: 0.2,
   emb: 15,
   v_emb: 420,
+  fi_o2_a_min: 0,
+  fi_o2_a_max: 0,
+  v_a_min: 0,
+  v_a_max: 0,
+  p_a_min: 0,
+  p_a_max: 0,
 };
 
 let t0 = 0,
