@@ -45,6 +45,7 @@ body {
 
 .row.input {
   max-width: 50%;
+  justify-content: flex-end;
 }
 
 .column {
@@ -52,7 +53,7 @@ body {
   display: flex;
   justify-content: space-between;
   flex: 1;
-  align-items: center;
+  align-items: flex-end;
   padding: 5px 0;
 }
 
