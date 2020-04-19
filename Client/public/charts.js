@@ -42,8 +42,8 @@ const optsFlow = {
 };
 
 const optsHis = {
-  width: window.innerWidth * 0.66 - 40,
-  height: window.innerHeight * 0.5 - 60,
+  width: window.innerWidth * 0.8,
+  height: window.innerHeight * 0.8,
   scales: {
     x: {
       time: false,
