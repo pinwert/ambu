@@ -2,7 +2,8 @@ export default function info(values) {
   const inputs = {
     v_ins: document.getElementById("v_ins"),
     v_esp: document.getElementById("v_esp"),
-    ie: document.getElementById("ie"),
+    ie_ins: document.getElementById("ie_ins"),
+    ie_esp: document.getElementById("ie_esp"),
     emb: document.getElementById("emb"),
     parada_ins: document.getElementById("parada_ins"),
     fi_o2_a_min: document.getElementById("fi_o2_a_min"),

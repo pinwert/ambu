@@ -23,6 +23,7 @@ export default function keyboard(inputs, send) {
     start: document.getElementById("start"),
     stop: document.getElementById("stop"),
     his: document.getElementById("his"),
+    mute: document.getElementById("mute"),
   };
   const historico = {
     modal_his: document.getElementById("modal_his"),
@@ -87,6 +88,7 @@ export default function keyboard(inputs, send) {
       k.value_bis.value = dataToSend.value_bis;
       if (k.keypad.style.display == "none") {
         k.keypad.style.display = "flex";
+        k.value.focus();
       }
     };
   });

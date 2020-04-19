@@ -25,6 +25,9 @@ const dataAcceptedAlberto = [
   "v_a_max",
   "p_a_min",
   "p_a_max",
+  "mute",
+  "v_ins",
+  "v_esp",
 ];
 
 let values = {
@@ -53,22 +56,6 @@ window.onload = () => {
   const portFer = new SerialPort("/dev/ttyACM0", { baudRate });
   const parserWrite = new Readline();
   portFer.pipe(parserWrite);
-
-  const info = infoModule(values);
-
-  keyboard(info.inputs, (dataToSend) => {
-    if (dataAcceptedFer.includes(dataToSend.field)) {
-      values[dataToSend.field] = dataToSend.value;
-      if (dataToSend.field_bis) {
-        values[dataToSend.field_bis] = dataToSend.value_bis;
-      }
-      console.log("-----------> W Fer", valuesToSend(), dataToSend);
-      portFer.write(`<${valuesToSend()}>\n`);
-    } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
-      console.log("-----------> W Alberto", dataToSend.field, dataToSend.value);
-      portAlberto.write(`${dataToSend.field},${dataToSend.value}\n`);
-    }
-  });
 
   // ------------------------------ Arduino Alberto
 
@@ -117,11 +104,12 @@ window.onload = () => {
   parserWrite.on("data", (line) => {
     if (line.startsWith("<")) {
       const data = line.slice(1, -2).split(",");
-      const [marcha, ie, parada_ins, emb, v_emb] = data;
+      const [marcha, ie_ins, ie_esp, parada_ins, emb, v_emb] = data;
       if (Number.isNaN(Number(marcha))) return;
       updateValues({
         marcha,
-        ie,
+        ie_ins,
+        ie_esp,
         parada_ins,
         emb,
         v_emb,
@@ -133,13 +121,16 @@ window.onload = () => {
       if (peep !== undefined) info.inputsShow.peep.innerHTML = peep.toFixed(1);
       if (p_max !== undefined)
         info.inputsShow.p_max.innerHTML = p_max.toFixed(1);
-      ch.updateHistory({ v_ins, v_esp, peep, p_max }, j);
+      const ie = ie_ins / ie_esp;
+      ch.updateHistory({ v_ins, v_esp, peep, p_max, ie, emb }, j);
+      sendData({ field: "v_ins", value: v_ins });
+      sendData({ field_bis: "v_esp", value_bis: v_esp });
       j++;
 
       if (j > numberOfPoints / 4) {
         j = 0;
       }
-      csv.writerHistory.write([peep, p_max, v_ins, v_esp]);
+      csv.writerHistory.write([peep, p_max, v_ins, v_esp, ie, emb]);
 
       ins_acc = 0;
       ex_acc = 0;
@@ -152,10 +143,29 @@ window.onload = () => {
   function updateValues(msg) {
     Object.keys(msg).forEach((k) => {
       values[k] = msg[k];
-      info.inputs.ie.innerHTML = (Number(msg.ie) * 100).toFixed(0);
+      info.inputs.ie_ins.innerHTML = Number(msg.ie_ins).toFixed(1);
+      info.inputs.ie_esp.innerHTML = Number(msg.ie_esp).toFixed(1);
       info.inputs.parada_ins.innerHTML = Number(msg.parada_ins).toFixed(1);
       info.inputs.emb.innerHTML = Number(msg.emb).toFixed(0);
     });
+  }
+
+  const info = infoModule(values);
+
+  keyboard(info.inputs, sendData);
+
+  function sendData(dataToSend) {
+    if (dataAcceptedFer.includes(dataToSend.field)) {
+      values[dataToSend.field] = dataToSend.value;
+      if (dataToSend.field_bis) {
+        values[dataToSend.field_bis] = dataToSend.value_bis;
+      }
+      console.log("-----------> W Fer", valuesToSend());
+      portFer.write(`<${valuesToSend()}>\n`);
+    } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
+      console.log("-----------> W Alberto", dataToSend.field, dataToSend.value);
+      portAlberto.write(`${dataToSend.field},${dataToSend.value}\n`);
+    }
   }
 
   function valuesToSend() {

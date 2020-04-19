@@ -1,6 +1,6 @@
 const dataFlow = [[], [], []];
 const dataPressure = [[], []];
-const dataHis = [[0], [], [], [], []];
+const dataHis = [[0], [], [], [], [], [], []];
 
 const optsFlow = {
   width: window.innerWidth * 0.66 - 40,
@@ -54,26 +54,32 @@ const optsHis = {
     {
       label: "V ins",
       stroke: "red",
-      fill: "rgba(237, 125, 49,0.3)",
       scale: "a",
     },
     {
       label: "V esp",
       stroke: "green",
-      fill: "rgba(112, 143, 71,0.3)",
       scale: "a",
     },
     {
       label: "peep",
       stroke: "blue",
-      fill: "rgba(68, 114, 196,0.3)",
       scale: "b",
     },
     {
       label: "p_max",
-      stroke: "aquamarine",
-      fill: "rgba(60, 10, 196,0.3)",
+      stroke: "aqua",
       scale: "b",
+    },
+    {
+      label: "ie",
+      stroke: "yellowgreen",
+      scale: "c",
+    },
+    {
+      label: "emb",
+      stroke: "burlywood",
+      scale: "d",
     },
   ],
   axes: [
@@ -83,24 +89,50 @@ const optsHis = {
     {
       space: 10,
       show: true,
-      label: "Histórico",
+      label: "Volumen",
       labelSize: 30,
       labelFont: "bold 12px Arial",
       font: "8px Arial",
       gap: 5,
       size: 50,
-      stroke: "black",
+      stroke: "red",
       scale: "a",
     },
     {
       side: 1,
       space: 10,
       show: true,
+      label: "Presión",
       font: "8px Arial",
       gap: 5,
       size: 50,
-      stroke: "black",
+      stroke: "blue",
       scale: "b",
+      grid: { show: false },
+    },
+    {
+      side: 1,
+      space: 10,
+      show: true,
+      label: "Ie",
+      font: "8px Arial",
+      gap: 5,
+      size: 50,
+      stroke: "yellowgreen",
+      scale: "c",
+      grid: { show: false },
+    },
+    {
+      side: 1,
+      space: 10,
+      show: true,
+      label: "Emboladas",
+      font: "8px Arial",
+      gap: 5,
+      size: 50,
+      stroke: "burlywood",
+      scale: "d",
+      grid: { show: false },
     },
   ],
 };

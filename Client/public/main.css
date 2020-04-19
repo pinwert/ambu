@@ -127,23 +127,30 @@ table {
   width: 100%;
   margin-top: 2px;
 }
-button {
+.button {
   color: white;
-  padding: 10px;
   width: 45%;
   border-radius: 6px;
   border: none;
   box-shadow: 2px 2px 1px gray;
   cursor: pointer;
+  border: 1px solid seagreen;
+  color: seagreen;
+  max-height: 33px;
+  height: 33px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-#start {
-  background-color: green;
+.start {
+  background-color: seagreen;
+  border: none;
+  color: white;
 }
-#stop {
+.stop {
   background-color: red;
-}
-#his {
-  background-color: orange;
+  border: none;
+  color: white;
 }
 .keypad_wrapper {
   background-color: white;
@@ -160,12 +167,15 @@ button {
 .value {
   font-size: 38px;
   display: flex;
-  min-width: 50px;
   padding: 0 10px;
   justify-content: flex-end;
   align-items: center;
   font-weight: bold;
   cursor: pointer;
+}
+
+.separator {
+  padding: 0;
 }
 
 .title {
@@ -183,7 +193,7 @@ button {
 .alarma_titulo {
   position: absolute;
   top: 6px;
-  left: -20px;
+  left: -30px;
   background-color: white;
   padding: 10px 15px;
   font-size: 20px;
@@ -193,6 +203,7 @@ button {
   background-color: white;
   color: black;
   box-shadow: none;
+  text-align: center;
 }
 
 table.alarma {
@@ -206,6 +217,9 @@ table.alarma {
 
 .value.alarma {
   display: table-cell;
+}
+.title.alarma {
+  padding: 0;
 }
 
 .peep,

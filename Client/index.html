@@ -59,7 +59,9 @@
       </div>
       <div class="row">
         <div class="row">
-          <span class="value ie" id="ie">--</span>
+          <span class="value ie" id="ie_ins">--</span>
+          <span class="value separator ie"> / </span>
+          <span class="value ie" id="ie_esp">--</span>
           <div class="column">
             <span class="title ie">IE</span>
             <span class="subtitle ie">%</span>
@@ -113,11 +115,23 @@
         </table>
       </div>
       <div class="row">
-        <button id="start" data-key="marcha" data-value="1">START</button>
-        <button id="stop" data-key="marcha" data-value="0">STOP</button>
+        <button
+          class="button start"
+          id="start"
+          data-key="marcha"
+          data-value="1"
+        >
+          START
+        </button>
+        <button class="button stop" id="stop" data-key="marcha" data-value="0">
+          STOP
+        </button>
       </div>
       <div class="row">
-        <button id="his">HISTORICO</button>
+        <button class="button" id="his">HISTORICO</button>
+        <button class="button" data-key="mute" data-value="1" id="mute">
+          &#128263; MUTE
+        </button>
       </div>
       <div id="modal_his"><div id="hisChart" class="chart"></div></div>
       <div id="keypad">
