@@ -121,7 +121,7 @@ window.onload = () => {
       if (peep !== undefined) info.inputsShow.peep.innerHTML = peep.toFixed(1);
       if (p_max !== undefined)
         info.inputsShow.p_max.innerHTML = p_max.toFixed(1);
-      const ie = (ie_ins || 0) / Number(ie_esp);
+      const ie = (Number(ie_ins) || 0) / Number(ie_esp);
       ch.updateHistory({ v_ins, v_esp, peep, p_max, ie, emb }, j);
       if (v_ins) sendData({ field: "v_ins", value: v_ins });
       if (v_esp) sendData({ field_bis: "v_esp", value_bis: v_esp });
