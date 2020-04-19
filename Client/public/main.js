@@ -104,6 +104,10 @@ window.onload = () => {
       t0 = Number(time);
       csv.writerData.write(data);
       timeoutReconect = setTimeout(reconect, 2000);
+    } else {
+      if (dataAcceptedAlberto.includes(data[0])) {
+        info.inputs[data[0]] = data[1];
+      }
     }
   });
 
