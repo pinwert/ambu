@@ -176,8 +176,8 @@ const optsPressure = {
 };
 export default function charts(numberOfPoints, sampling) {
   for (var j = 0; j <= numberOfPoints; j++) {
-    dataFlow[0][j] = (j / 50).toFixed(0);
-    dataPressure[0][j] = (j / 50).toFixed(0);
+    dataFlow[0][j] = (j / 50).toFixed(2);
+    dataPressure[0][j] = (j / 50).toFixed(2);
   }
   const flow = new uPlot(
     optsFlow,
