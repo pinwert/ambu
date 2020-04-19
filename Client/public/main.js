@@ -105,7 +105,9 @@ window.onload = () => {
       csv.writerData.write(data);
       timeoutReconect = setTimeout(reconect, 2000);
     } else if (info.inputs[data[0]]) {
-      info.inputs[data[0]].innerHTML = data[1];
+      info.inputs[data[0]].innerHTML = Number(data[1]).toFixed(
+        ["v_ins", "v_esp"].includes(data[0]) ? 0 : 1
+      );
     }
   });
 
@@ -187,6 +189,8 @@ window.onload = () => {
     } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
       console.log("-----------> W Alberto", dataToSend.field, dataToSend.value);
       portAlberto.write(`${dataToSend.field},${dataToSend.value}\n`);
+      if (dataToSend.field_bis)
+        portAlberto.write(`${dataToSend.field_bis},${dataToSend.value_bis}\n`);
     }
   }
 
