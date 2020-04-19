@@ -136,6 +136,7 @@ table {
   cursor: pointer;
   border: 1px solid seagreen;
   color: seagreen;
+  background-color: transparent;
   max-height: 33px;
   height: 33px;
   display: flex;
@@ -192,7 +193,7 @@ table {
 }
 .alarma_titulo {
   position: absolute;
-  top: 0;
+  top: 4px;
   left: -30px;
   background-color: white;
   padding: 5px 15px;
