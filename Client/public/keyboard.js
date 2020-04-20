@@ -16,6 +16,7 @@ export default function keyboard(inputs, values, showHistory, send) {
     keypad: document.getElementById("keypad"),
     send: document.getElementById("send"),
     delete: document.getElementById("delete"),
+    clear: document.getElementById("clear"),
     keys: document.querySelectorAll("#keypad .key"),
   };
 
@@ -60,9 +61,13 @@ export default function keyboard(inputs, values, showHistory, send) {
 
   k.value.onfocus = (e) => {
     dataToSend.active = "value";
+    k.value.classList.add("active");
+    k.value_bis.classList.remove("active");
   };
   k.value_bis.onfocus = (e) => {
     dataToSend.active = "value_bis";
+    k.value_bis.classList.add("active");
+    k.value.classList.remove("active");
   };
 
   Object.keys(inputs).forEach((key) => {
@@ -82,11 +87,16 @@ export default function keyboard(inputs, values, showHistory, send) {
           dataToSend.field = e.currentTarget.id;
           dataToSend.value = values[e.currentTarget.id];
       }
+      dataToSend.active = "value";
+      k.value.classList.add("active");
+      k.value_bis.classList.remove("active");
       dataToSend.value_bis = "";
       k.field_name.innerHTML = dataToSend.field;
-      k.value.value = dataToSend.value;
+      k.value.placeholder = dataToSend.value;
+      k.value.value = "";
       k.field_name_bis.innerHTML = dataToSend.field_bis;
-      k.value_bis.value = dataToSend.value_bis;
+      k.value_bis.placeholder = dataToSend.value_bis;
+      k.value_bis.value = "";
       if (k.keypad.style.display == "none") {
         k.keypad.style.display = "flex";
         k.value.focus();
@@ -96,21 +106,26 @@ export default function keyboard(inputs, values, showHistory, send) {
 
   k.keys.forEach((p) => {
     p.onclick = (e) => {
-      dataToSend[dataToSend.active] += e.currentTarget.innerHTML;
+      if (k[dataToSend.active].value === "") {
+        dataToSend[dataToSend.active] = e.currentTarget.innerHTML;
+      } else {
+        dataToSend[dataToSend.active] += e.currentTarget.innerHTML;
+      }
       k[dataToSend.active].value = dataToSend[dataToSend.active];
-    };
-  });
-
-  k.keys.forEach((p) => {
-    p.onclick = (e) => {
-      dataToSend[dataToSend.active] += e.currentTarget.innerHTML;
-      k[dataToSend.active].value = dataToSend[dataToSend.active];
+      k[dataToSend.active].focus();
     };
   });
 
   k.delete.onclick = (e) => {
     dataToSend[dataToSend.active] = dataToSend.value.slice(0, -1);
     k[dataToSend.active].value = dataToSend[dataToSend.active];
+    k[dataToSend.active].focus();
+  };
+
+  k.clear.onclick = (e) => {
+    dataToSend[dataToSend.active] = "";
+    k[dataToSend.active].value = dataToSend[dataToSend.active];
+    k[dataToSend.active].focus();
   };
 
   k.send.onclick = (e) => {

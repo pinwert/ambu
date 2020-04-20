@@ -101,6 +101,13 @@ input.double {
   border: 1px solid gray;
   text-align: center;
   line-height: 30px;
+  outline: none;
+}
+.num_box.active {
+  border: 3px solid lightskyblue;
+}
+.num_box::placeholder {
+  color: rgba(25, 25, 25, 0.3);
 }
 
 .field_name {
