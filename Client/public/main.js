@@ -112,7 +112,7 @@ window.onload = () => {
       timeoutReconect = setTimeout(reconect, 2000);
     } else if (info.inputs[data[0]]) {
       console.log("---------> Read", line);
-      if (["distension_ins", "distension_esp"] === data[0]) {
+      if (["distension_ins", "distension_esp"].includes(data[0])) {
         info.inputsShow[`${data[0]}_ini`].innerHTML = data[1];
         info.inputsShow[`${data[0]}_fin`].innerHTML = data[2];
       }
