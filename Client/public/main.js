@@ -45,8 +45,8 @@ let values = {
   v_a_max: 0,
   p_a_min: 0,
   p_a_max: 0,
-  distension_ins: 0,
-  distension_esp: 0,
+  distension_ins_time: 0,
+  distension_esp_time: 0,
 };
 
 let t0 = 0,
