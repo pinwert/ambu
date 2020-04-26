@@ -94,8 +94,9 @@ input.double {
 }
 
 .num_box {
-  height: 30px;
-  width: 100%;
+  height: 40px;
+  font-size: 30px;
+  max-width: 50%;
   background: white;
   border-radius: 3px;
   border: 1px solid gray;
@@ -112,27 +113,33 @@ input.double {
 
 .field_name {
   padding-right: 10px;
+  font-size: 25px;
+  flex: 1;
+  text-align: center;
 }
 
 .keypad_wrapper td {
   width: 33%;
   color: white;
-  background-color: rgba(25, 25, 25, 0.9);
   text-align: center;
-  height: 40px;
-  border-radius: 6px;
-  box-shadow: 1px 1px 1px gray;
+  height: 60px;
+  font-size: 25px;
   margin: 2px;
+  cursor: pointer;
 }
 
-td.btn {
-  width: 33%;
-  cursor: pointer;
-  text-align: center;
+.keypad_wrapper td span {
+  background-color: rgba(25, 25, 25, 9);
+  margin: 3px 0 3px 6px;
+  padding: 14px;
+  display: block;
+  border-radius: 10px;
+  background: linear-gradient(rgba(25, 25, 25, 1), rgba(25, 25, 25, 0.7));
 }
 
-td.key {
-  cursor: pointer;
+.keypad_wrapper td span.send {
+  background-color: orange;
+  background: linear-gradient(orange, rgba(255, 165, 0, 0.7));
 }
 
 table {
@@ -172,7 +179,7 @@ table {
   position: absolute;
   top: calc(50% - 200px);
   left: calc(50% - 200px);
-  padding: 5px;
+  padding: 10px;
   border-radius: 6px;
   box-shadow: 2px 2px 1px gray;
 }
@@ -258,4 +265,8 @@ table.alarma {
 
 .bis {
   display: none;
+}
+
+.only_read {
+  cursor: auto;
 }

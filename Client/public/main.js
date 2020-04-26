@@ -28,6 +28,12 @@ const dataAcceptedAlberto = [
   "mute",
   "v_ins",
   "v_esp",
+  "distension_ins",
+  "distension_esp",
+  "distension_ins_ini",
+  "distension_ins_fin",
+  "distension_esp_ini",
+  "distension_esp_fin",
 ];
 
 let values = {
@@ -43,6 +49,8 @@ let values = {
   v_a_max: 0,
   p_a_min: 0,
   p_a_max: 0,
+  distension_ins: 0,
+  distension_esp: 0,
 };
 
 let t0 = 0,
@@ -105,6 +113,10 @@ window.onload = () => {
       csv.writerData.write(data);
       timeoutReconect = setTimeout(reconect, 2000);
     } else if (info.inputs[data[0]]) {
+      if (["distension_ins", "distension_esp"] === data[0]) {
+        info.inputsShow[`${data[0]}_ini`].innerHTML = data[1];
+        info.inputsShow[`${data[0]}_fin`].innerHTML = data[2];
+      }
       info.inputs[data[0]].innerHTML = Number(data[1]).toFixed(
         ["v_ins", "v_esp"].includes(data[0]) ? 0 : 1
       );
@@ -187,7 +199,11 @@ window.onload = () => {
       portFer.write(`<${valuesToSend()}>\n`);
     } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
       console.log("-----------> W Alberto", dataToSend.field, dataToSend.value);
-      portAlberto.write(`${dataToSend.field},${dataToSend.value}\n`);
+      portAlberto.write(
+        ["distension_ins", "distension_esp"].includes(dataToSend.field)
+          ? `(${dataToSend.field},${dataToSend.value}(\n`
+          : `${dataToSend.field},${dataToSend.value}\n`
+      );
       if (dataToSend.field_bis)
         portAlberto.write(`${dataToSend.field_bis},${dataToSend.value_bis}\n`);
     }

@@ -115,6 +115,29 @@
         </table>
       </div>
       <div class="row">
+        <span class="alarma_titulo">Distensión</span>
+        <table class="alarma">
+          <tr>
+            <td class="title alarma"></td>
+            <td class="title alarma">Tiempo</td>
+            <td class="title alarma">Presión ini</td>
+            <td class="title alarma">Presion fin</td>
+          </tr>
+          <tr>
+            <td class="title alarma">Insp.</td>
+            <td class="value alarma" id="distension_ins">0</td>
+            <td class="value alarma only_read" id="distension_ins_ini">0</td>
+            <td class="value alarma only_read" id="distension_ins_fin">0</td>
+          </tr>
+          <tr>
+            <td class="title alarma">Esp.</td>
+            <td class="value alarma" id="distension_esp">0</td>
+            <td class="value alarma only_read" id="distension_esp_ini">0</td>
+            <td class="value alarma only_read" id="distension_esp_fin">0</td>
+          </tr>
+        </table>
+      </div>
+      <div class="row">
         <button
           class="button start"
           id="start"
@@ -146,29 +169,29 @@
           </div>
           <table>
             <tr>
-              <td class="key">1</td>
-              <td class="key">2</td>
-              <td class="key">3</td>
+              <td><span class="key">1</span></td>
+              <td><span class="key">2</span></td>
+              <td><span class="key">3</span></td>
             </tr>
             <tr>
-              <td class="key">4</td>
-              <td class="key">5</td>
-              <td class="key">6</td>
+              <td><span class="key">4</span></td>
+              <td><span class="key">5</span></td>
+              <td><span class="key">6</span></td>
             </tr>
             <tr>
-              <td class="key">7</td>
-              <td class="key">8</td>
-              <td class="key">9</td>
+              <td><span class="key">7</span></td>
+              <td><span class="key">8</span></td>
+              <td><span class="key">9</span></td>
             </tr>
             <tr>
-              <td class="btn" id="delete">CE</td>
-              <td class="key">0</td>
-              <td class="key">.</td>
+              <td id="delete"><span class="btn">CE</span></td>
+              <td><span class="key">0</span></td>
+              <td><span class="key">.</span></td>
             </tr>
             <tr />
             <tr>
-              <td class="btn" id="clear">C</td>
-              <td class="btn" id="send" colspan="2">SEND</td>
+              <td id="clear"><span class="btn">C</span></td>
+              <td id="send" colspan="2"><span class="btn send">SEND</span></td>
             </tr>
           </table>
         </div>
