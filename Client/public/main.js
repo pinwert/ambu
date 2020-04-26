@@ -18,10 +18,6 @@ const dataAcceptedFer = [
   "v_emb",
   "distension_ins",
   "distension_esp",
-  "distension_ins_ini",
-  "distension_ins_fin",
-  "distension_esp_ini",
-  "distension_esp_fin",
 ];
 
 const dataAcceptedAlberto = [
@@ -34,6 +30,10 @@ const dataAcceptedAlberto = [
   "mute",
   "v_ins",
   "v_esp",
+  "distension_ins_ini",
+  "distension_ins_fin",
+  "distension_esp_ini",
+  "distension_esp_fin",
 ];
 
 let values = {
@@ -113,6 +113,7 @@ window.onload = () => {
       csv.writerData.write(data);
       timeoutReconect = setTimeout(reconect, 2000);
     } else if (info.inputs[data[0]]) {
+      console.log("---------> Read", line);
       if (["distension_ins", "distension_esp"] === data[0]) {
         info.inputsShow[`${data[0]}_ini`].innerHTML = data[1];
         info.inputsShow[`${data[0]}_fin`].innerHTML = data[2];
