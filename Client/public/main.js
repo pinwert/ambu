@@ -119,6 +119,8 @@ window.onload = () => {
       info.inputs[data[0]].innerHTML = Number(data[1]).toFixed(
         ["v_ins", "v_esp"].includes(data[0]) ? 0 : 1
       );
+    } else {
+      console.log("---------> Read unknow", line);
     }
   });
 
