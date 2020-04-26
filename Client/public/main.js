@@ -30,10 +30,8 @@ const dataAcceptedAlberto = [
   "mute",
   "v_ins",
   "v_esp",
-  "distension_ins_ini",
-  "distension_ins_fin",
-  "distension_esp_ini",
-  "distension_esp_fin",
+  "distension_ins",
+  "distension_esp",
 ];
 
 let values = {
