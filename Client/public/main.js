@@ -201,7 +201,11 @@ window.onload = () => {
           ? `(${dataToSend.field},${dataToSend.value})\n`
           : `<${valuesToSend()}>\n`
       );
-      portFer.write(`<${valuesToSend()}>\n`);
+      portFer.write(
+        ["distension_ins", "distension_esp"].includes(dataToSend.field)
+          ? `(${dataToSend.field},${dataToSend.value})\n`
+          : `<${valuesToSend()}>\n`
+      );
     } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
       console.log(
         "-----------> W Alberto",
