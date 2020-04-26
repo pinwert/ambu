@@ -16,6 +16,12 @@ const dataAcceptedFer = [
   "parada_ins",
   "emb",
   "v_emb",
+  "distension_ins",
+  "distension_esp",
+  "distension_ins_ini",
+  "distension_ins_fin",
+  "distension_esp_ini",
+  "distension_esp_fin",
 ];
 
 const dataAcceptedAlberto = [
@@ -28,12 +34,6 @@ const dataAcceptedAlberto = [
   "mute",
   "v_ins",
   "v_esp",
-  "distension_ins",
-  "distension_esp",
-  "distension_ins_ini",
-  "distension_ins_fin",
-  "distension_esp_ini",
-  "distension_esp_fin",
 ];
 
 let values = {
@@ -195,20 +195,19 @@ window.onload = () => {
       if (dataToSend.field_bis) {
         values[dataToSend.field_bis] = dataToSend.value_bis;
       }
-      console.log("-----------> W Fer", `<${valuesToSend()}>\n`);
+      console.log(
+        "-----------> W Fer",
+        ["distension_ins", "distension_esp"].includes(dataToSend.field)
+          ? `(${dataToSend.field},${dataToSend.value})\n`
+          : `<${valuesToSend()}>\n`
+      );
       portFer.write(`<${valuesToSend()}>\n`);
     } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
       console.log(
         "-----------> W Alberto",
-        ["distension_ins", "distension_esp"].includes(dataToSend.field)
-          ? `(${dataToSend.field},${dataToSend.value})\n`
-          : `${dataToSend.field},${dataToSend.value}\n`
+        `${dataToSend.field},${dataToSend.value}\n`
       );
-      portAlberto.write(
-        ["distension_ins", "distension_esp"].includes(dataToSend.field)
-          ? `(${dataToSend.field},${dataToSend.value})\n`
-          : `${dataToSend.field},${dataToSend.value}\n`
-      );
+      portAlberto.write(`${dataToSend.field},${dataToSend.value}\n`);
       if (dataToSend.field_bis)
         portAlberto.write(`${dataToSend.field_bis},${dataToSend.value_bis}\n`);
     }
