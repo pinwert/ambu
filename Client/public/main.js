@@ -201,12 +201,12 @@ window.onload = () => {
       console.log(
         "-----------> W Alberto",
         ["distension_ins", "distension_esp"].includes(dataToSend.field)
-          ? `(${dataToSend.field},${dataToSend.value}(\n`
+          ? `(${dataToSend.field},${dataToSend.value})\n`
           : `${dataToSend.field},${dataToSend.value}\n`
       );
       portAlberto.write(
         ["distension_ins", "distension_esp"].includes(dataToSend.field)
-          ? `(${dataToSend.field},${dataToSend.value}(\n`
+          ? `(${dataToSend.field},${dataToSend.value})\n`
           : `${dataToSend.field},${dataToSend.value}\n`
       );
       if (dataToSend.field_bis)
