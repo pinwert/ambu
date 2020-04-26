@@ -30,8 +30,6 @@ const dataAcceptedAlberto = [
   "mute",
   "v_ins",
   "v_esp",
-  "distension_ins",
-  "distension_esp",
 ];
 
 let values = {
@@ -195,11 +193,12 @@ window.onload = () => {
       if (dataToSend.field_bis) {
         values[dataToSend.field_bis] = dataToSend.value_bis;
       }
-      const message = ["distension_ins", "distension_esp"].includes(
-        dataToSend.field
-      )
-        ? `(${dataToSend.field},${dataToSend.value})\n`
-        : `<${valuesToSend()}>\n`;
+
+      let message = `<${valuesToSend()}>\n`;
+      if (["distension_ins", "distension_esp"].includes(dataToSend.field)) {
+        message = `(${dataToSend.field},${dataToSend.value})\n`;
+        info.inputsShow[dataToSend.field] = dataToSend.value;
+      }
       console.log("-----------> W Fer", message);
       portFer.write(message);
     } else if (dataAcceptedAlberto.includes(dataToSend.field)) {

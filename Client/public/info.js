@@ -22,6 +22,8 @@ export default function info(values) {
     v_ins: document.getElementById("v_ins"),
     v_esp: document.getElementById("v_esp"),
     fi_o2: document.getElementById("fi_o2"),
+    distension_ins: document.getElementById("distension_ins_time"),
+    distension_esp: document.getElementById("distension_esp_time"),
     distension_ins_ini: document.getElementById("distension_ins_ini"),
     distension_ins_fin: document.getElementById("distension_ins_fin"),
     distension_esp_ini: document.getElementById("distension_esp_ini"),
