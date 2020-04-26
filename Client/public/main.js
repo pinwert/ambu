@@ -197,7 +197,8 @@ window.onload = () => {
       let message = `<${valuesToSend()}>\n`;
       if (["distension_ins", "distension_esp"].includes(dataToSend.field)) {
         message = `(${dataToSend.field},${dataToSend.value})\n`;
-        info.inputsShow[dataToSend.field] = dataToSend.value;
+        values[`${dataToSend.field}_time`] = dataToSend.value;
+        info.inputsShow[dataToSend.field].innerHTML = dataToSend.value;
       }
       console.log("-----------> W Fer", message);
       portFer.write(message);

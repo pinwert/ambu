@@ -83,6 +83,11 @@ export default function keyboard(inputs, values, showHistory, send) {
           dataToSend.field = "v_emb";
           dataToSend.value = values.v_emb;
           break;
+        case "distension_ins":
+        case "distension_esp":
+          dataToSend.field = e.currentTarget.id;
+          dataToSend.value = values[`${e.currentTarget.id}_time`];
+          break;
         default:
           dataToSend.field = e.currentTarget.id;
           dataToSend.value = values[e.currentTarget.id];

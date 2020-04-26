@@ -270,3 +270,11 @@ table.alarma {
 .only_read {
   cursor: auto;
 }
+
+.test {
+  font-size: 16px;
+  color: orange;
+  text-decoration: underline;
+  vertical-align: middle;
+  cursor: pointer;
+}
