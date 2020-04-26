@@ -195,10 +195,15 @@ window.onload = () => {
       if (dataToSend.field_bis) {
         values[dataToSend.field_bis] = dataToSend.value_bis;
       }
-      console.log("-----------> W Fer", valuesToSend());
+      console.log("-----------> W Fer", `<${valuesToSend()}>\n`);
       portFer.write(`<${valuesToSend()}>\n`);
     } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
-      console.log("-----------> W Alberto", dataToSend.field, dataToSend.value);
+      console.log(
+        "-----------> W Alberto",
+        ["distension_ins", "distension_esp"].includes(dataToSend.field)
+          ? `(${dataToSend.field},${dataToSend.value}(\n`
+          : `${dataToSend.field},${dataToSend.value}\n`
+      );
       portAlberto.write(
         ["distension_ins", "distension_esp"].includes(dataToSend.field)
           ? `(${dataToSend.field},${dataToSend.value}(\n`
