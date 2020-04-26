@@ -115,12 +115,11 @@ window.onload = () => {
       if (["distension_ins", "distension_esp"].includes(data[0])) {
         info.inputsShow[`${data[0]}_ini`].innerHTML = data[1];
         info.inputsShow[`${data[0]}_fin`].innerHTML = data[2];
+      } else {
+        info.inputs[data[0]].innerHTML = Number(data[1]).toFixed(
+          ["v_ins", "v_esp"].includes(data[0]) ? 0 : 1
+        );
       }
-      info.inputs[data[0]].innerHTML = Number(data[1]).toFixed(
-        ["v_ins", "v_esp"].includes(data[0]) ? 0 : 1
-      );
-    } else {
-      console.log("---------> Read unknow", line);
     }
   });
 
@@ -196,25 +195,22 @@ window.onload = () => {
       if (dataToSend.field_bis) {
         values[dataToSend.field_bis] = dataToSend.value_bis;
       }
-      console.log(
-        "-----------> W Fer",
-        ["distension_ins", "distension_esp"].includes(dataToSend.field)
-          ? `(${dataToSend.field},${dataToSend.value})\n`
-          : `<${valuesToSend()}>\n`
-      );
-      portFer.write(
-        ["distension_ins", "distension_esp"].includes(dataToSend.field)
-          ? `(${dataToSend.field},${dataToSend.value})\n`
-          : `<${valuesToSend()}>\n`
-      );
+      const message = ["distension_ins", "distension_esp"].includes(
+        dataToSend.field
+      )
+        ? `(${dataToSend.field},${dataToSend.value})\n`
+        : `<${valuesToSend()}>\n`;
+      console.log("-----------> W Fer", message);
+      portFer.write(message);
     } else if (dataAcceptedAlberto.includes(dataToSend.field)) {
-      console.log(
-        "-----------> W Alberto",
-        `${dataToSend.field},${dataToSend.value}\n`
-      );
-      portAlberto.write(`${dataToSend.field},${dataToSend.value}\n`);
-      if (dataToSend.field_bis)
-        portAlberto.write(`${dataToSend.field_bis},${dataToSend.value_bis}\n`);
+      const message = `${dataToSend.field},${dataToSend.value}\n`;
+      console.log("-----------> W Alberto", message);
+      portAlberto.write(message);
+      if (dataToSend.field_bis) {
+        const message_bis = `${dataToSend.field_bis},${dataToSend.value_bis}\n`;
+        console.log("-----------> W Alberto", message_bis);
+        portAlberto.write(message_bis);
+      }
     }
   }
 
