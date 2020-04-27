@@ -142,13 +142,19 @@ export default function keyboard(inputs, values, showHistory, send) {
 
   Object.keys(buttons).forEach((b) => {
     buttons[b].onclick = (e) => {
-      if (b === "his") {
-        historico.modal_his.style.display = "flex";
-        showHistory();
-      } else {
-        dataToSend.field = e.currentTarget.dataset.key;
-        dataToSend.value = e.currentTarget.dataset.value;
-        send(dataToSend);
+      switch (b) {
+        case "his":
+          historico.modal_his.style.display = "flex";
+          showHistory();
+          break;
+        default:
+          dataToSend.field = e.currentTarget.dataset.key;
+          dataToSend.value = e.currentTarget.dataset.value;
+          if (b === "mute") {
+            buttons.mute.dataset.value =
+              buttons.mute.dataset.value === "1" ? "0" : "1";
+          }
+          send(dataToSend);
       }
     };
   });
