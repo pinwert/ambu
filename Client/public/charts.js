@@ -4,7 +4,7 @@ const dataHis = [[0], [], [], [], [], [], []];
 
 const optsFlow = {
   width: window.innerWidth * 0.66 - 40,
-  height: window.innerHeight * 0.5 - 60,
+  height: window.innerHeight * 0.5 - 20,
   scales: {
     x: {
       time: false,
@@ -143,7 +143,7 @@ const optsHis = {
 
 const optsPressure = {
   width: window.innerWidth * 0.66 - 40,
-  height: window.innerHeight * 0.5 - 60,
+  height: window.innerHeight * 0.5 - 20,
   scales: {
     x: {
       time: false,
