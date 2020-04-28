@@ -206,7 +206,8 @@ table {
 }
 
 .title.big {
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: normal;
 }
 
 .title2 {
