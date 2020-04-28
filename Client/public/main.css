@@ -205,6 +205,10 @@ table {
   font-weight: bold;
 }
 
+.title.big {
+  font-size: 20px;
+}
+
 .title2 {
   font-size: 16px;
   padding-left: 10px;

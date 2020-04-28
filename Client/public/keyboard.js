@@ -153,6 +153,8 @@ export default function keyboard(inputs, values, showHistory, send) {
           if (b === "mute") {
             buttons.mute.dataset.value =
               buttons.mute.dataset.value === "1" ? "0" : "1";
+            buttons.mute.innerHTML =
+              buttons.mute.dataset.value === "1" ? "MUTE" : "UNMUTE";
           }
           send(dataToSend);
       }
