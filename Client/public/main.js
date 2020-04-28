@@ -30,6 +30,7 @@ const dataAcceptedAlberto = [
   "mute",
   "v_ins",
   "v_esp",
+  "trigger_asistido",
 ];
 
 let values = {
@@ -47,6 +48,7 @@ let values = {
   p_a_max: 0,
   distension_ins_time: 0,
   distension_esp_time: 0,
+  trigger_asistido: 0,
 };
 
 let t0 = 0,

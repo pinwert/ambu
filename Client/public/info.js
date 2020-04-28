@@ -14,6 +14,7 @@ export default function info(values) {
     p_a_max: document.getElementById("p_a_max"),
     distension_ins: document.getElementById("distension_ins"),
     distension_esp: document.getElementById("distension_esp"),
+    trigger_asistido: document.getElementById("trigger_asistido"),
   };
 
   const inputsShow = {
